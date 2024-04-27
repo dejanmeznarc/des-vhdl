@@ -6,20 +6,20 @@ library IEEE;
 
 entity sint24 is
   port (
-    clk    : in    std_logic;            -- sistemska ura	
-    clk1   : out   std_logic;            -- serijska tipkovnica	
+    clk    : in    std_logic;                    -- sistemska ura	
+    clk1   : out   std_logic;                    -- serijska tipkovnica	
     sdata  : in    std_logic;
     shld   : out   std_logic;
-    pwm1   : out   std_logic;            -- PWM
+    pwm1   : out   std_logic;                    -- PWM
 
-    data   : inout unsigned(7 downto 0); -- IO modul
-    addr   : out   unsigned(1 downto 0);
+    data   : inout std_logic_vector(7 downto 0); -- IO modul
+    addr   : out   std_logic_vector(1 downto 0);
     clkout : out   std_logic;
 
-    led    : out   unsigned(7 downto 0); -- LED
+    led    : out   unsigned(7 downto 0);         -- LED
 
-    sw     : in    unsigned(3 downto 0); -- butns
-    key    : in    unsigned(1 downto 0)  -- butns
+    sw     : in    unsigned(3 downto 0);         -- butns
+    key    : in    unsigned(1 downto 0)          -- butns
   );
 end entity;
 
@@ -29,8 +29,6 @@ architecture RTL of sint24 is
   signal clk10hz : std_logic;
 
 begin
-  led(0) <= key(0);
-
   u1: entity work.clocks
     port map (
       clkin   => clk,
@@ -38,7 +36,12 @@ begin
       clk10hz => clk10hz
     );
 
-  led(1) <= clk1hz;
-  led(2) <= clk10hz;
+  u2: entity work.interface
+    port map (
+      clk      => clk,
+      addr_pin => addr,
+      data_pin => data,
+      btns     => led(7 downto 4)
+    );
 
 end architecture;

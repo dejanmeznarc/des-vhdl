@@ -117,4 +117,5 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rotb
 set_global_assignment -name VHDL_FILE sint24.vhd
 set_global_assignment -name VHDL_FILE clocks.vhd
+set_global_assignment -name VHDL_FILE interface.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
