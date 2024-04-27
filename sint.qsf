@@ -1,0 +1,119 @@
+#============================================================
+# Build by Terasic System Builder
+#============================================================
+
+set_global_assignment -name TOP_LEVEL_ENTITY sint24
+set_global_assignment -name FAMILY "Cyclone IV E"
+set_global_assignment -name DEVICE EP4CE22F17C6
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0
+set_global_assignment -name LAST_QUARTUS_VERSION "20.1.1 Lite Edition"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "08:32:01 SEPTEMBER 10,2014"
+set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
+set_global_assignment -name DEVICE_FILTER_PIN_COUNT 256
+set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 6
+
+#============================================================
+# DE0 Nano, clk 50MHz, led(8), key(2), sw(4)
+#============================================================
+set_location_assignment PIN_R8 -to clk
+set_location_assignment PIN_A15 -to led[0]
+set_location_assignment PIN_A13 -to led[1]
+set_location_assignment PIN_B13 -to led[2]
+set_location_assignment PIN_A11 -to led[3]
+set_location_assignment PIN_D1 -to led[4]
+set_location_assignment PIN_F3 -to led[5]
+set_location_assignment PIN_B1 -to led[6]
+set_location_assignment PIN_L3 -to led[7]
+set_location_assignment PIN_J15 -to key[0]
+set_location_assignment PIN_E1 -to key[1]
+set_location_assignment PIN_M1 -to sw[0]
+set_location_assignment PIN_T8 -to sw[1]
+set_location_assignment PIN_B9 -to sw[2]
+set_location_assignment PIN_M15 -to sw[3]
+
+#============================================================
+# Razsiritveni modul: clkout, addr(2) in data(8)
+#============================================================
+set_location_assignment PIN_A14 -to clkout
+set_location_assignment PIN_B16 -to addr[0]
+set_location_assignment PIN_C14 -to addr[1]
+set_location_assignment PIN_C16 -to data[0]
+set_location_assignment PIN_C15 -to data[1]
+set_location_assignment PIN_D16 -to data[2]
+set_location_assignment PIN_D15 -to data[3]
+set_location_assignment PIN_D14 -to data[4]
+set_location_assignment PIN_F15 -to data[5]
+set_location_assignment PIN_F16 -to data[6]
+set_location_assignment PIN_F14 -to data[7]
+
+#============================================================
+# Tipkovnica
+#============================================================
+set_location_assignment PIN_D11 -to sgnd
+set_location_assignment PIN_B11 -to sdata
+set_location_assignment PIN_E10 -to shld
+set_location_assignment PIN_D9 -to clk1
+set_location_assignment PIN_C9 -to pwm1
+
+#============================================================
+# Rotacijski Enkoder
+#============================================================
+set_location_assignment PIN_E15 -to rot[0]
+set_location_assignment PIN_E16 -to rot[1]
+set_location_assignment PIN_M16 -to rotb
+
+#============================================================
+# End of pin assignments 
+#============================================================
+
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to led[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to key[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to key[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clkout
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to addr[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to addr[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to data[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sgnd
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sdata
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to shld
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pwm1
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rotb
+set_global_assignment -name VHDL_FILE sint24.vhd
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
