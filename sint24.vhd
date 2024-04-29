@@ -4,56 +4,73 @@ library IEEE;
 
 entity sint24 is
   port (
-    clk           : in    std_logic;                    -- sistemska ura	
-    clk1          : out   std_logic;                    -- serijska tipkovnica	
-    sdata         : in    std_logic;
-    shld          : out   std_logic;
-    pwm1          : out   std_logic;                    -- PWM
-
-    pin_io_data   : inout std_logic_vector(7 downto 0); -- IO modul
+    clk           : in    std_logic;                              -- sistemska ura	
+    pin_io_data   : inout std_logic_vector(7 downto 0);           -- IO modul
     pin_io_addr   : out   std_logic_vector(1 downto 0);
     pin_io_clkout : out   std_logic;
-
-    pin_led       : out   unsigned(7 downto 0);         -- LED
-
-    sw            : in    unsigned(3 downto 0);         -- butns
-    key           : in    unsigned(1 downto 0)          -- butns
+    pin_led       : out   unsigned(7 downto 0) := (others => '0') -- LED
   );
 end entity;
 
 architecture RTL of sint24 is
 
-  signal clk1hz  : std_logic;
-  signal clk10hz : std_logic;
+  signal slowclk        : std_logic;
+  signal ultraSlowClock : std_logic;
+  signal counter        : unsigned(22 downto 0);
 
-  signal matrix : unsigned(7 downto 0) := "10101010";
+  signal address : unsigned(1 downto 0);
 
-  signal dout : std_logic_vector(7 downto 0);
-  signal din  : std_logic_vector(7 downto 0);
+  signal matrixData : std_logic_vector(7 downto 0);
+  signal matrixLine : unsigned(2 downto 0);
+  signal matrixCols : unsigned(4 downto 0);
+
+  signal buttonData : unsigned(3 downto 0);
 
 begin
-  u1: entity work.clocks
-    port map (
-      clkin   => clk,
-      clk1hz  => clk1hz,
-      clk10hz => clk10hz
-    );
 
-  u2: entity work.interface
-    port map (
-      clk      => clk,
-      pin_addr => pin_io_addr,
-      pin_clk  => pin_io_clkout,
-      pin_data => pin_io_data,
+  clkdownsizer: process (clk)
+  begin
+    if (rising_edge(clk)) then
+      counter <= counter + 1;
+    end if;
+  end process; -- clkdownsizer
+  slowclk        <= counter(10);
+  ultraSlowClock <= counter(22);
+  pin_led(0)     <= slowclk;
+  pin_led(1)     <= ultraSlowClock;
 
-      datain   => pin_io_data,
-      dataout  => dout,
+  --
+  --
+  --
+  --
 
-      buttons  => pin_led,
-      matrix   => matrix
-    );
+  addrSelector: process (slowclk)
+  begin
+    if rising_edge(slowclk) then
+      address <= address + 1;
+    end if;
 
+    if (address = "01") then
+      buttonData <= unsigned(pin_io_data(3 downto 0));
+    end if;
+  end process; -- addrSelector
 
-    pin_io_data <= dout;
+  pin_io_addr   <= std_logic_vector(address);
+  pin_io_clkout <= slowclk;
+  pin_io_data   <= (others => 'Z') when address = "01" else
+                  matrixData       when address = "10" else
+                    (others => '0');
+
+  pin_led(7 downto 4) <= unsigned(buttonData);
+
+  matrixData <= std_logic_vector(matrixLine & matrixCols);
+
+  cddd: process (ultraSlowClock)
+  begin
+    if rising_edge(ultraSlowClock) then
+      matrixLine <= matrixLine + 1;
+    end if;
+    matrixCols <= "11111";
+  end process; -- cddd
 
 end architecture;
