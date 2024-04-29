@@ -39,38 +39,27 @@ begin
   pin_led(0)     <= slowclk;
   pin_led(1)     <= ultraSlowClock;
 
-  --
-  --
-  --
-  --
 
-  addrSelector: process (slowclk)
-  begin
-    if rising_edge(slowclk) then
-      address <= address + 1;
-    end if;
-
-    if (address = "01") then
-      buttonData <= unsigned(pin_io_data(3 downto 0));
-    end if;
-  end process; -- addrSelector
-
-  pin_io_addr   <= std_logic_vector(address);
-  pin_io_clkout <= slowclk;
-  pin_io_data   <= (others => 'Z') when address = "01" else
-                  matrixData       when address = "10" else
-                    (others => '0');
-
+  
   pin_led(7 downto 4) <= unsigned(buttonData);
+  matrixData          <= std_logic_vector(matrixLine & matrixCols);
 
-  matrixData <= std_logic_vector(matrixLine & matrixCols);
+  interface_inst: entity work.interface
+    port map (
+      clk      => clk,
+      buttons  => buttonData,
+      matrix   => unsigned(matrixData),
+      pin_addr => pin_io_addr,
+      pin_data => pin_io_data,
+      pin_clk  => pin_io_clkout
+    );
 
   cddd: process (ultraSlowClock)
   begin
     if rising_edge(ultraSlowClock) then
       matrixLine <= matrixLine + 1;
     end if;
-    matrixCols <= "11111";
+    matrixCols <= "11011";
   end process; -- cddd
 
 end architecture;
