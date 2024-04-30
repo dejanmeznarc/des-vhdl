@@ -91,7 +91,7 @@ begin
     screen(6)(1) <= '1'; -- write dot in middle, so we can test
     screen(6)(2) <= '1'; -- write dot in middle, so we can test
     screen(5)(3) <= '1'; -- write dot in middle, so we can test
-    screen(6)(4) <= '1'; -- write dot in middle, so we can test
+    screen(6)(3) <= '1'; -- write dot in middle, so we can test
 
 -- TODO: save bottom tiles
 -- TODO: do game logic (limit use of left/right shift), detect loosing
