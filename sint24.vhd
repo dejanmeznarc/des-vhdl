@@ -31,14 +31,6 @@ architecture RTL of sint24 is
     "00001",
     "00001",
     "11111"
-
-    -- "10000",
-    -- "11000",
-    -- "11100",
-    -- "11110",
-    -- "11111",
-    -- "01111",
-    -- "00111"
   );
 begin
 
@@ -47,29 +39,8 @@ begin
     if (rising_edge(clk)) then
       counter <= counter + 1;
     end if;
-
-    if (rising_edge(counter(22))) then
-      janez <= janez + 1;
-
-      if (janez = 0) then
-        matrixLine <= "00000";
-
-      elsif (janez = 1) then
-        matrixLine <= "00001";
-      elsif (janez = 2) then
-        matrixLine <= "00011";
-      elsif (janez = 3) then
-        matrixLine <= "00111";
-      elsif (janez = 4) then
-        matrixLine <= "01111";
-      elsif (janez = 5) then
-        matrixLine <= "11111";
-      else
-        matrixLine <= "00000";
-        janez <= (others => '0');
-      end if;
-    end if;
   end process; -- identifier
+
 
   interface_inst: entity work.interface
     port map (
