@@ -24,7 +24,8 @@ architecture RTL of sint24 is
   signal counter : unsigned(24 downto 0);
   signal janez   : unsigned(24 downto 0);
 
-  signal offset : unsigned(2 downto 0) := (others => '0');
+  signal offset  : unsigned(2 downto 0) := (others => '0');
+  signal offset2 : unsigned(2 downto 0) := (others => '0');
 
   signal screen : screen_t := (
     "11111",
@@ -63,14 +64,16 @@ begin
 
   gpu_driver_inst: entity work.gpu_driver
     port map (
-      clk    => counter(24),
-      screen => screen,
-      offset => offset
+      clk      => counter(24),
+      screen   => screen,
+      offset_x => offset,
+      offset_y => offset2
     );
 
   mikro: process (buttonData, counter(10))
   begin
-    if (rising_edge(counter(10))) then
+    if (rising_edge(counter(14))) then
+
       if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
         offset <= offset + 1;
       end if;
@@ -78,8 +81,20 @@ begin
         offset <= offset - 1;
       end if;
 
-      if (offset > 11) then
+      if (buttonData(2) = '1' and buttonDataPrev(2) = '0') then
+        offset2 <= offset2 + 1;
+      end if;
+
+      if (buttonData(3) = '1' and buttonDataPrev(3) = '0') then
+        offset2 <= offset2 - 1;
+      end if;
+
+      if(offset > 4) then
         offset <= (others => '0');
+      end if;
+
+      if(offset2 > 6) then
+        offset2 <= (others => '0');
       end if;
 
       buttonDataPrev <= buttonData;
@@ -88,5 +103,7 @@ begin
   end process; -- mikro
 
   pin_led(2 downto 0) <= offset(2 downto 0);
+
+  pin_led(7 downto 5) <= offset2(2 downto 0);
 
 end architecture;
