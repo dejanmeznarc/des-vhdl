@@ -5,10 +5,10 @@ library IEEE;
 
 entity gpu_driver is
   port (
-    clk      : in     std_logic;
-    screen   : buffer screen_t;
-    offset_x : in     unsigned(2 downto 0) := (others => '0');
-    offset_y : in     unsigned(2 downto 0) := (others => '0')
+    clk      : in  std_logic;
+    screen   : out screen_t;
+    offset_x : in  unsigned(2 downto 0) := (others => '0');
+    offset_y : in  unsigned(2 downto 0) := (others => '0')
   );
 end entity;
 
@@ -33,8 +33,6 @@ begin
       end if;
     end if;
 
-
-
   end process; -- identifier
 
   gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
@@ -45,8 +43,7 @@ begin
       screen   => screen_fig
     );
 
-
-    gpu_bottom_draw_inst: entity work.gpu_bottom_draw
+  gpu_bottom_draw_inst: entity work.gpu_bottom_draw
     port map (
       clk    => clk,
       screen => screen_bottom
