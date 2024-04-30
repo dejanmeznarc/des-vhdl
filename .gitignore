@@ -4,7 +4,9 @@ target
 .project
 .bin
 db
-
+output_files
+simulation
+incremental_db
 
 
 
