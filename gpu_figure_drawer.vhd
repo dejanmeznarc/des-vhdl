@@ -5,7 +5,7 @@ library IEEE;
 
 entity gpu_firuge_drawer is
   port (
-    figureID : in  unsigned(2 downto 0); -- wha fig to display
+    figureID : in  unsigned(2 downto 0);                    -- wha fig to display
 
     cord_x   : in  unsigned(2 downto 0) := (others => '0'); -- col
     cord_y   : in  unsigned(2 downto 0) := (others => '0'); -- line
@@ -35,24 +35,22 @@ architecture rtl of gpu_firuge_drawer is
     )
   );
 
-  signal figure : figure_t;
+  signal fig : figure_t;
 
-  signal janez : unsigned(4 downto 0);
 begin
 
-  figure <= figs(to_integer(figureID));
+  -- TODO: just write figure in code bellow, no need for sepparate signal
+  fig <= figs(to_integer(figureID));
 
-  draw: process (figure, cord_x, cord_y)
+  draw: process (fig, cord_x, cord_y)
   begin
 
     screen <= (others => (others => '0'));
 
-    -- janez <= (4 downto (to_integer(cord_x) + 1) => '0') & "111" & ((to_integer(cord_x) - 1) downto 0 => '0');
-
-    screen(to_integer(cord_y - 1)) <= (("00000" & figure(0)) sll to_integer(cord_x)) srl 1;
-    screen(to_integer(cord_y - 0)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
-    screen(to_integer(cord_y + 1)) <= (("00000" & figure(2)) sll to_integer(cord_x)) srl 1;
-
+    -- shift figure bits to the correct position (overflow is ignored)
+    screen(to_integer(cord_y - 1)) <= (("00000" & fig(0)) sll to_integer(cord_x)) srl 1;
+    screen(to_integer(cord_y - 0)) <= (("00000" & fig(1)) sll to_integer(cord_x)) srl 1;
+    screen(to_integer(cord_y + 1)) <= (("00000" & fig(2)) sll to_integer(cord_x)) srl 1;
 
   end process; -- identifier
 
