@@ -39,8 +39,6 @@ begin
   pin_led(0)     <= slowclk;
   pin_led(1)     <= ultraSlowClock;
 
-
-  
   pin_led(7 downto 4) <= unsigned(buttonData);
   matrixData          <= std_logic_vector(matrixLine & matrixCols);
 

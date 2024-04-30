@@ -17,7 +17,7 @@
 // PROGRAM "Quartus Prime"
 // VERSION "Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition"
 
-// DATE "04/29/2024 23:44:01"
+// DATE "04/30/2024 12:35:10"
 
 // 
 // Device: Altera EP4CE22F17C6 Package FBGA256
@@ -36,7 +36,7 @@ module sint24 (
 	pin_io_clkout,
 	pin_led);
 input 	clk;
-inout 	[7:0] pin_io_data;
+output 	[7:0] pin_io_data;
 output 	[1:0] pin_io_addr;
 output 	pin_io_clkout;
 output 	[7:0] pin_led;
