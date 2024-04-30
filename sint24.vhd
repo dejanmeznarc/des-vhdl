@@ -68,14 +68,18 @@ begin
       offset => offset
     );
 
-  mikro: process (buttonData, counter(8))
+  mikro: process (buttonData, counter(10))
   begin
-    if (rising_edge(counter(8))) then
+    if (rising_edge(counter(10))) then
       if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
         offset <= offset + 1;
       end if;
       if (buttonData(1) = '1' and buttonDataPrev(1) = '0') then
         offset <= offset - 1;
+      end if;
+
+      if (offset > 11) then
+        offset <= (others => '0');
       end if;
 
       buttonDataPrev <= buttonData;
