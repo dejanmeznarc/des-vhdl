@@ -60,39 +60,33 @@ begin
     end if;
   end process; -- identifier
 
-  jani: process (counter)
-
-  begin
-    -- screen <= (others => (others => '0')); -- clear screen
-    -- screen(to_integer(counter + 1))(to_integer(offset + 2) downto to_integer(offset + 0)) <= figs(1)(0);
-    -- screen(to_integer(counter + 2))(to_integer(offset + 2) downto to_integer(offset + 0)) <= figs(1)(1);
-    -- screen(to_integer(counter + 3))(2 downto 0) <= figs(1)(2);
-  end process; -- jani
 
   cord_col <= offset;
+  cord_line <= counter;
 
   micika: process (figure, cord_col, cord_line)
   begin
     screen <= (others => (others => '0')); -- clear screen
 
-    -- others for some reason doesnt work
+    -- save figure to lines, use dummy var because others doesn't work with memory
     dummy0 <= "000000000" & unsigned(figs(to_integer(figure))(0));
     dummy1 <= "000000000" & unsigned(figs(to_integer(figure))(1));
     dummy2 <= "000000000" & unsigned(figs(to_integer(figure))(2));
 
-    -- dummy1 <= unsigned(figs(to_integer(figure))(1));
-    -- dummy2 <= unsigned(figs(to_integer(figure))(2));
+    -- slide object left to the desired cords
+    
     line0 <= dummy0 sll to_integer(cord_col);
     line1 <= dummy1 sll to_integer(cord_col);
     line2 <= dummy2 sll to_integer(cord_col);
 
-    -- line1 <= dummy1(2 downto 0) & (others => '0');
-    -- line2 <= dummy2(2 downto 0) & (others => '0');
-    screen(to_integer(cord_line + 0)) <= line0(7 downto 3);
+    -- write to screen
+    screen(to_integer(cord_line + 0)) <= line0(7 downto 3); -- line is bigger, so we can slide object freely
     screen(to_integer(cord_line + 1)) <= line1(7 downto 3);
     screen(to_integer(cord_line + 2)) <= line2(7 downto 3);
-    -- screen(to_integer(cord_line + 1)) <= line1(8 downto 3);
-    -- screen(to_integer(cord_line + 2)) <= line2(8 downto 3);
+
+
+
+
   end process; -- identifier
 
 end architecture;
