@@ -5,11 +5,12 @@ library IEEE;
 
 entity sint24 is
   port (
-    clk           : in    std_logic;                              -- sistemska ura	
-    pin_io_data   : inout std_logic_vector(7 downto 0);           -- IO modul
+    clk           : in    std_logic;                               -- sistemska ura	
+    pin_io_data   : inout std_logic_vector(7 downto 0);            -- IO modul
     pin_io_addr   : out   std_logic_vector(1 downto 0);
     pin_io_clkout : out   std_logic;
-    pin_led       : out   unsigned(7 downto 0) := (others => '0') -- LED
+    pin_led       : out   unsigned(7 downto 0) := (others => '0'); -- LED
+    pin_key       : in    unsigned(1 downto 0)
   );
 end entity;
 
@@ -67,39 +68,39 @@ begin
       clk      => counter(24),
       screen   => screen,
       offset_x => offset,
-      offset_y => offset2
+      --offset_y => offset2,
+      reset    => not(pin_key(0))
     );
 
-  mikro: process (buttonData, counter(10))
+  mikro: process (counter(14), buttonData)
   begin
     if (rising_edge(counter(14))) then
 
       if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
-        offset <= offset + 1;
+        if (offset = 4) then
+          offset <= "100";
+        else
+          offset <= offset + 1;
+        end if;
       end if;
+
       if (buttonData(1) = '1' and buttonDataPrev(1) = '0') then
-        offset <= offset - 1;
-      end if;
-
-      if (buttonData(2) = '1' and buttonDataPrev(2) = '0') then
-        offset2 <= offset2 + 1;
-      end if;
-
-      if (buttonData(3) = '1' and buttonDataPrev(3) = '0') then
-        offset2 <= offset2 - 1;
-      end if;
-
-      if(offset > 4) then
-        offset <= (others => '0');
-      end if;
-
-      if(offset2 > 6) then
-        offset2 <= (others => '0');
+        if (offset = 0)  then
+          offset <= "000";
+        else
+          offset <= offset - 1;
+        end if;
       end if;
 
       buttonDataPrev <= buttonData;
 
     end if;
+
+
+
+    -- if (not(pin_key(0)) = '1') then
+      -- offset <= "010";
+    -- end if;
   end process; -- mikro
 
   pin_led(2 downto 0) <= offset(2 downto 0);

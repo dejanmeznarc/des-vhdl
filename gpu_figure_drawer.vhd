@@ -19,9 +19,9 @@ architecture rtl of gpu_firuge_drawer is
   type figures_t is array (0 to 2) of figure_t;
   constant figs : figures_t := (
     (
-      "101",
       "010",
-      "101"
+      "110",
+      "000"
     ),
     (
       "110",
