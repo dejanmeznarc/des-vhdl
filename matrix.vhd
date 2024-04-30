@@ -17,22 +17,23 @@ entity matrix is
 end entity;
 
 architecture rtl of matrix is
-  signal curLine : unsigned(2 downto 0);
-
-  signal reverseCol : unsigned(4 downto 0);
+  signal curLine      : unsigned(2 downto 0);
+  signal reverseCol   : unsigned(4 downto 0);
+  signal pwmCounter   : unsigned(2 downto 0);
+  signal pwmDutyCycle : unsigned(2 downto 0) := "010";
 begin
 
-  identifier: process (clk)
+  -- sweep between line numbers for matrix display
+  lineSweeper: process (pwmCounter)
   begin
-    if (rising_edge(clk)) then
+    if (rising_edge(pwmCounter(2))) then -- go to next line only when pwm duty cycle finishe
       if (curLine > 7) then
         curLine <= "000";
       else
         curLine <= curLine + 1;
       end if;
     end if;
-  end process; -- identifier
-
+  end process; -- lineSweeper
 
   -- reverse bit order TODO: find better way
   reverseCol <= screen(to_integer(curLine))(0) --
@@ -41,8 +42,23 @@ begin
     & screen(to_integer(curLine))(3) --
     & screen(to_integer(curLine))(4);
 
+  pwmCounterProcess: process (clk)
+  begin
+    if rising_edge(clk) then
+      pwmCounter <= pwmCounter + 1;
+    end if;
+  end process; -- pwmCounterProcess
 
-  matrix_data <= (curLine+1) & reverseCol;
+  -- count nubmer of bits
+  ones_counter_inst: entity work.ones_counter
+    port map (
+      A    => reverseCol,
+      ones => pwmDutyCycle
+    );
+
+  -- (curLine + 1) -> line numbers are offset by one
+  -- turn off leds and wait for certian time
+  matrix_data <= (curLine + 1) & reverseCol when pwmCounter > not(pwmDutyCycle) else (others => '0');
 end architecture;
 
 
