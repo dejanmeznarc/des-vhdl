@@ -60,33 +60,41 @@ begin
     end if;
   end process; -- identifier
 
-
-  cord_col <= offset;
+  cord_col  <= offset;
   cord_line <= counter;
 
-  micika: process (figure, cord_col, cord_line)
+  draw: process (figure, cord_col, cord_line)
   begin
     screen <= (others => (others => '0')); -- clear screen
 
+    --- ###############################
+    --- LEFT/RIGHT and down tile
+    --- #############################
     -- save figure to lines, use dummy var because others doesn't work with memory
     dummy0 <= "000000000" & unsigned(figs(to_integer(figure))(0));
     dummy1 <= "000000000" & unsigned(figs(to_integer(figure))(1));
     dummy2 <= "000000000" & unsigned(figs(to_integer(figure))(2));
 
     -- slide object left to the desired cords
-    
     line0 <= dummy0 sll to_integer(cord_col);
     line1 <= dummy1 sll to_integer(cord_col);
     line2 <= dummy2 sll to_integer(cord_col);
 
-    -- write to screen
+    -- write to screen, but dont erase empty spaces
     screen(to_integer(cord_line + 0)) <= line0(7 downto 3); -- line is bigger, so we can slide object freely
     screen(to_integer(cord_line + 1)) <= line1(7 downto 3);
     screen(to_integer(cord_line + 2)) <= line2(7 downto 3);
 
+    --- ###############################
+    --- BOTTOM TILES
+    --- #############################
+    screen(6)(1) <= '1'; -- write dot in middle, so we can test
+    screen(6)(2) <= '1'; -- write dot in middle, so we can test
+    screen(5)(3) <= '1'; -- write dot in middle, so we can test
+    screen(6)(4) <= '1'; -- write dot in middle, so we can test
 
-
-
+-- TODO: save bottom tiles
+-- TODO: do game logic (limit use of left/right shift), detect loosing
   end process; -- identifier
 
 end architecture;
