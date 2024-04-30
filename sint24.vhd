@@ -15,13 +15,16 @@ end entity;
 
 architecture RTL of sint24 is
 
-  signal matrixData : unsigned(7 downto 0);
-  signal buttonData : unsigned(3 downto 0);
+  signal matrixData     : unsigned(7 downto 0);
+  signal buttonData     : unsigned(3 downto 0);
+  signal buttonDataPrev : unsigned(3 downto 0);
 
   signal matrixLine : unsigned(4 downto 0);
 
   signal counter : unsigned(24 downto 0);
   signal janez   : unsigned(24 downto 0);
+
+  signal offset : unsigned(2 downto 0) := (others => '0');
 
   signal screen : screen_t := (
     "11111",
@@ -41,7 +44,6 @@ begin
     end if;
   end process; -- identifier
 
-
   interface_inst: entity work.interface
     port map (
       clk      => clk,
@@ -54,9 +56,33 @@ begin
 
   matrix_inst: entity work.matrix
     port map (
-      clk         => counter(3), -- needs to be at least 4x slower than interface clock
+      clk         => counter(5), -- needs to be at least 4x slower than interface clock
       matrix_data => matrixData,
       screen      => screen
     );
+
+  gpu_driver_inst: entity work.gpu_driver
+    port map (
+      clk    => counter(24),
+      screen => screen,
+      offset => offset
+    );
+
+  mikro: process (buttonData, counter(8))
+  begin
+    if (rising_edge(counter(8))) then
+      if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
+        offset <= offset + 1;
+      end if;
+      if (buttonData(1) = '1' and buttonDataPrev(1) = '0') then
+        offset <= offset - 1;
+      end if;
+
+      buttonDataPrev <= buttonData;
+
+    end if;
+  end process; -- mikro
+
+  pin_led(2 downto 0) <= offset(2 downto 0);
 
 end architecture;
