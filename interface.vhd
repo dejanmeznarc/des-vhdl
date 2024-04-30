@@ -24,14 +24,20 @@ begin
   begin
     if rising_edge(clk) then
       address <= address + 1;
+
+      -- dont waste clock cycles for unimplemented stuff
+      if (address = "11") then
+        address <= "01";
+      end if;
+
     end if;
-  end process; -- addressChooser
+    end process; -- addressChooser
 
   pin_clk  <= clk;
   pin_addr <= std_logic_vector(address);
   pin_data <= (others => 'Z')             when address = "01" else -- read mode
                (std_logic_vector(matrix)) when address = "10" else -- write matrix
-               (others => '0'); -- others (not yet defined)
+               (others => 'Z'); -- others (not yet defined)
 
   -- TODO: find better way of storing button state. (without creating another signal)
   buttonsData <= unsigned(pin_data(3 downto 0)) when address = "01" else buttonsData;
