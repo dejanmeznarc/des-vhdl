@@ -3,7 +3,7 @@ library IEEE;
   use IEEE.numeric_std.all;
   use work.screen_pkg.all;
 
-entity sint24 is
+entity main is
   port (
     clk           : in    std_logic;                              -- sistemska ura	
     pin_io_data   : inout std_logic_vector(7 downto 0);           -- IO modul
@@ -13,7 +13,7 @@ entity sint24 is
   );
 end entity;
 
-architecture RTL of sint24 is
+architecture RTL of main is
 
   signal matrixData     : unsigned(7 downto 0);
   signal buttonData     : unsigned(3 downto 0);

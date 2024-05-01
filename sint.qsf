@@ -2,7 +2,7 @@
 # Build by Terasic System Builder
 #============================================================
 
-set_global_assignment -name TOP_LEVEL_ENTITY sint24
+set_global_assignment -name TOP_LEVEL_ENTITY main
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE22F17C6
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0
@@ -78,6 +78,8 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -115,14 +117,12 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pwm1
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rotb
-set_global_assignment -name VHDL_FILE sint24.vhd
-set_global_assignment -name VHDL_FILE clocks.vhd
-set_global_assignment -name VHDL_FILE interface.vhd
-set_global_assignment -name VHDL_FILE matrix.vhd
-set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
-set_global_assignment -name VHDL_FILE screen_pkg.vhd
-set_global_assignment -name VHDL_FILE ones_counter.vhd
-set_global_assignment -name VHDL_FILE gpu_driver.vhd
-set_global_assignment -name VHDL_FILE gpu_figure_drawer.vhd
+set_global_assignment -name VHDL_FILE src/main.vhd
+set_global_assignment -name VHDL_FILE src/interface/matrix.vhd
+set_global_assignment -name VHDL_FILE src/interface/interface.vhd
+set_global_assignment -name VHDL_FILE src/graphics/gpu_figure_drawer.vhd
+set_global_assignment -name VHDL_FILE src/graphics/gpu_driver.vhd
+set_global_assignment -name VHDL_FILE src/common/types/screen_pkg.vhd
+set_global_assignment -name VHDL_FILE src/common/ones_counter.vhd
+set_global_assignment -name SDC_FILE de0.sdc
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
