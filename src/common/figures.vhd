@@ -20,9 +20,8 @@ package figures is
     (
       "000",
       "000",
-      "111"
+      "010"
     )
   );
-
 
 end package;

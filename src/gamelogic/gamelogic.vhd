@@ -27,6 +27,9 @@ architecture rtl of gamelogic is
   signal line      : unsigned(2 downto 0) := "000";
   signal curFigure : unsigned(2 downto 0) := "010";
 
+  signal limitRight : unsigned(2 downto 0);
+  signal limitLeft  : unsigned(2 downto 0);
+
   signal screen_fig     : screen_t := (others => (others => '0'));
   signal screen_barrier : screen_t := (others => (others => '0'));
 
@@ -47,6 +50,13 @@ architecture rtl of gamelogic is
 begin
 
   line <= line when looseFlag = '1' else count(27 downto 25);
+
+  figLimitFinder_inst: entity work.figLimitFinder
+    port map (
+      figureID   => curFigure,
+      limitLeft  => limitLeft,
+      limitRight => limitRight
+    );
 
   identifier: process (clk)
   begin
@@ -110,6 +120,11 @@ begin
             screen_game_over when looseFlag = '1' else
             screen_combined;
 
-  reset    <= btns(2) and btns(3);
-  pin_leds <= (others => looseFlag);
+  reset     <= btns(2) and btns(3);
+
+
+  locLimitL <= limitLeft;
+  locLimitR <= limitRight;
+  pin_leds(7 downto 5) <= limitLeft;
+  pin_leds(2 downto 0) <= limitRight;
 end architecture;
