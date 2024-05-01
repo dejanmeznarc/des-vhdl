@@ -117,6 +117,7 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pwm1
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rotb
+set_global_assignment -name VHDL_FILE src/control/number_picker.vhd
 set_global_assignment -name VHDL_FILE src/main.vhd
 set_global_assignment -name VHDL_FILE src/interface/matrix.vhd
 set_global_assignment -name VHDL_FILE src/interface/interface.vhd

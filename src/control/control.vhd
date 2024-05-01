@@ -29,27 +29,16 @@ begin
       );
   end generate;
 
-  identifier: process (clk)
-  begin
-    if rising_edge(clk) then
-      if (clicks(0) = '1') then
-        if (loc_x >= 4) then
-          loc_x <= "100";
-        else
-          loc_x <= loc_x + 1;
-        end if;
-      end if;
-
-      if (clicks(1) = '1') then
-        if (loc_x <= 0) then
-          loc_x <= "000";
-        else
-          loc_x <= loc_x - 1;
-        end if;
-      end if;
-
-    end if;
-  end process; -- identifier
+  horizontalLocationController: entity work.number_picker
+    generic map (
+      LIMIT_TOP => "100"
+    )
+    port map (
+      clk    => clk,
+      up     => clicks(0),
+      down   => clicks(1),
+      number => loc_x
+    );
 
   pin_led(2 downto 0) <= loc_x;
 
