@@ -5,8 +5,8 @@ library IEEE;
 
 entity gpu_driver is
   port (
-    clk    : in     std_logic;
-    screen : buffer screen_t;
+    clk      : in     std_logic;
+    screen   : buffer screen_t;
     offset_x : in     unsigned(2 downto 0) := (others => '0');
     offset_y : in     unsigned(2 downto 0) := (others => '0')
   );
@@ -16,8 +16,7 @@ architecture rtl of gpu_driver is
 
   signal counter : unsigned(5 downto 0);
 
-  signal figure    : unsigned(2 downto 0) := (others => '0');
-
+  signal figure : unsigned(2 downto 0) := (others => '0');
 
 begin
 
@@ -35,9 +34,9 @@ begin
   gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
     port map (
       figureID => figure,
-      cord_x => offset_x,
-      cord_y => offset_y,
-      screen => screen
+      cord_x   => offset_x,
+      cord_y   => offset_y,
+      screen   => screen
     );
 
 end architecture;
