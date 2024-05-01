@@ -32,7 +32,7 @@ begin
       screen((cord_y - 1)) <= ((("00000" & figure(0)) sll to_integer(cord_x)) srl 1);
     end if;
 
-    if (cord_y > 0) then
+    if (cord_y >= 0) then
       screen((cord_y)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
     end if;
 
