@@ -4,43 +4,41 @@ library ieee;
   use ieee.numeric_std.all;
 
 entity number_picker is
-  generic (
-    LIMIT_TOP   : unsigned := "100";
-    LIMIT_BOTOM : unsigned := "000"
-  );
   port (
-    clk    : in    std_logic;
-    up     : in    std_logic;
-    down   : in    std_logic;
-    number : inout unsigned(2 downto 0) := (others => '0')
+    clk       : in  std_logic;
+    up        : in  std_logic;
+    down      : in  std_logic;
+    number    : out unsigned(2 downto 0) := (others => '0');
+    limitUp   : in  unsigned(2 downto 0) := (others => '0');
+    limitDown : in  unsigned(2 downto 0) := (others => '0')
   );
 end entity;
 
 architecture rtl of number_picker is
-
+  signal num : unsigned(2 downto 0) := (others => '0');
 begin
 
   process (clk)
   begin
     if rising_edge(clk) then
       if (up = '1') then
-        if (number >= LIMIT_TOP) then
-          number <= LIMIT_TOP;
+        if (num >= limitUp) then
+          num <= limitUp;
         else
-          number <= number + 1;
+          num <= num + 1;
         end if;
       end if;
 
       if (down = '1') then
-        if (number <= LIMIT_BOTOM) then
-          number <= LIMIT_BOTOM;
+        if (num <= limitDown) then
+          num <= limitDown;
         else
-          number <= number - 1;
+          num <= num - 1;
         end if;
       end if;
 
     end if;
   end process; -- identifier
 
-  number <= number;
+  number <= num;
 end architecture;

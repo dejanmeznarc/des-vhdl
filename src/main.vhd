@@ -15,8 +15,6 @@ end entity;
 
 architecture RTL of main is
   signal counter : unsigned(24 downto 0);
-  signal offset  : unsigned(2 downto 0) := (others => '0');
-  signal offset2 : unsigned(2 downto 0) := (others => '0');
 
   signal location : unsigned(2 downto 0) := (others => '0');
 
@@ -57,18 +55,22 @@ begin
 
   control_inst: entity work.control
     port map (
-      clk      => clk,
-      buttons  => buttonData,
-      location => location
+      clk       => clk,
+      buttons   => buttonData,
+      location  => location,
+      locLimitR => locRightLimit,
+      locLimitL => locLeftLimit
     );
 
   gamelogic_inst: entity work.gamelogic
     port map (
-      clk      => clk,
-      btns     => buttonData,
-      pin_leds => pin_led,
-      location => location,
-      screen   => screen
+      clk       => clk,
+      btns      => buttonData,
+      pin_leds  => pin_led,
+      locLimitR => locRightLimit,
+      locLimitL => locLeftLimit,
+      location  => location,
+      screen    => screen
     );
 
   -- gpu_driver_inst: entity work.gpu_driver

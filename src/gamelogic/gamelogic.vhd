@@ -10,11 +10,13 @@ library ieee;
 entity gamelogic is
 
   port (
-    clk      : in    std_logic;
-    location : inout unsigned(2 downto 0);
-    screen   : out   screen_t;
-    pin_leds : out   unsigned(7 downto 0);
-    btns     : in    unsigned(3 downto 0)
+    clk       : in  std_logic;
+    location  : in  unsigned(2 downto 0);
+    locLimitR : out unsigned(2 downto 0) := "010";
+    locLimitL : out unsigned(2 downto 0) := "100";
+    screen    : out screen_t;
+    pin_leds  : out unsigned(7 downto 0);
+    btns      : in  unsigned(3 downto 0)
 
   );
 end entity;
