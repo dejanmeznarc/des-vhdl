@@ -50,10 +50,9 @@ begin
 
   buttons_inst: entity work.buttons
     port map (
-      clk     => clk_counter(5),
+      clk     => clk_counter(20),
       btn_in  => buttonData,
-      buttons => buttons,
-      pin_led => pin_led
+      buttons => buttons
     );
 
 end architecture;
