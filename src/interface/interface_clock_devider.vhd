@@ -6,18 +6,22 @@ library IEEE;
 entity interface_clock_divider is
   port (
     clk     : in  std_logic;
+    clk2    : out std_logic; -- clock with interface delay in mind
     counter : out unsigned(31 downto 0) := (others => '0')
   );
 end entity;
 
 architecture rtl of interface_clock_divider is
   signal count : unsigned(31 downto 0) := (others => '0');
+
 begin
 
   interface_clock_divider: process (clk)
   begin
     if rising_edge(clk) then
       count <= count + 1;
+
+      clk2 <= count(5);
     end if;
   end process; -- interface_clock_divider
 

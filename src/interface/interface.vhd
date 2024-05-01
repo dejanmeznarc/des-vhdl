@@ -22,11 +22,14 @@ architecture rtl of interface is
   signal buttonData  : unsigned(3 downto 0);
   signal clk_counter : unsigned(31 downto 0);
 
+  signal slowClk : std_logic := '0';
+
 begin
 
   interface_clock_divider_inst: entity work.interface_clock_divider
     port map (
       clk     => clk,
+      clk2    => slowClk,
       counter => clk_counter
     );
 
@@ -43,14 +46,14 @@ begin
 
   matrix_inst: entity work.matrix
     port map (
-      clk         => clk_counter(5), -- interface needs 4cycles to update, thats why be slower
+      clk         => slowClk, -- use slower clock, so itnerface can update all values
       matrix_data => matrixData,
       screen      => screen
     );
 
   buttons_inst: entity work.buttons
     port map (
-      clk     => clk_counter(20),
+      clk     => slowClk,
       btn_in  => buttonData,
       buttons => buttons
     );
