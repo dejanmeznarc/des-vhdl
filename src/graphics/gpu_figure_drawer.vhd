@@ -29,9 +29,9 @@ architecture rtl of gpu_firuge_drawer is
       "000"
     ),
     (
-      "110",
-      "110",
-      "000"
+      "000",
+      "000",
+      "111"
     )
   );
 

@@ -9,16 +9,14 @@ entity number_picker is
     LIMIT_BOTOM : unsigned := "000"
   );
   port (
-    clk      : in  std_logic;
-    up     : in  std_logic;
-    down    : in  std_logic;
-    number : out unsigned(2 downto 0) := (others => '0')
+    clk    : in    std_logic;
+    up     : in    std_logic;
+    down   : in    std_logic;
+    number : inout unsigned(2 downto 0) := (others => '0')
   );
 end entity;
 
 architecture rtl of number_picker is
-
-  signal num : unsigned(2 downto 0) := (others => '0');
 
 begin
 
@@ -26,23 +24,23 @@ begin
   begin
     if rising_edge(clk) then
       if (up = '1') then
-        if (num >= LIMIT_TOP) then
-          num <= LIMIT_TOP;
+        if (number >= LIMIT_TOP) then
+          number <= LIMIT_TOP;
         else
-          num <= num + 1;
+          number <= number + 1;
         end if;
       end if;
 
       if (down = '1') then
-        if (num <= LIMIT_BOTOM) then
-          num <= LIMIT_BOTOM;
+        if (number <= LIMIT_BOTOM) then
+          number <= LIMIT_BOTOM;
         else
-          num <= num - 1;
+          number <= number - 1;
         end if;
       end if;
 
     end if;
   end process; -- identifier
 
-  number <= num;
+  number <= number;
 end architecture;

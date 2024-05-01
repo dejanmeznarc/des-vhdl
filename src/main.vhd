@@ -18,7 +18,9 @@ architecture RTL of main is
   signal offset  : unsigned(2 downto 0) := (others => '0');
   signal offset2 : unsigned(2 downto 0) := (others => '0');
 
-  signal buttonData      : unsigned(3 downto 0);
+  signal location : unsigned(2 downto 0) := (others => '0');
+
+  signal buttonData : unsigned(3 downto 0);
 
   signal screen : screen_t := (
     "11111",
@@ -29,6 +31,9 @@ architecture RTL of main is
     "00001",
     "11111"
   );
+
+  signal locRightLimit : unsigned(2 downto 0);
+  signal locLeftLimit  : unsigned(2 downto 0);
 begin
 
   identifier: process (clk)
@@ -41,20 +46,29 @@ begin
 
   interface_inst: entity work.interface
     port map (
-      clk       => clk,
-      buttons   => buttonData,
+      clk      => clk,
+      buttons  => buttonData,
 
-      screen    => screen,
-      pin_addr  => pin_io_addr,
-      pin_data  => pin_io_data,
-      pin_clk   => pin_io_clkout
+      screen   => screen,
+      pin_addr => pin_io_addr,
+      pin_data => pin_io_data,
+      pin_clk  => pin_io_clkout
     );
 
   control_inst: entity work.control
     port map (
-      clk       => clk,
-      pin_led   => pin_led,
-      buttons   => buttonData
+      clk      => clk,
+      buttons  => buttonData,
+      location => location
+    );
+
+  gamelogic_inst: entity work.gamelogic
+    port map (
+      clk      => clk,
+      btns     => buttonData,
+      pin_leds => pin_led,
+      location => location,
+      screen   => screen
     );
 
   -- gpu_driver_inst: entity work.gpu_driver
