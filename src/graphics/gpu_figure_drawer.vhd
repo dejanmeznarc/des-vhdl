@@ -29,10 +29,15 @@ begin
 
     screen <= (others => (others => '0'));
 
-    -- janez <= (4 downto (to_integer(cord_x) + 1) => '0') & "111" & ((to_integer(cord_x) - 1) downto 0 => '0');
-    screen(to_integer(cord_y - 1)) <= (("00000" & figure(0)) sll to_integer(cord_x)) srl 1;
-    screen(to_integer(cord_y - 0)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
-    screen(to_integer(cord_y + 1)) <= (("00000" & figure(2)) sll to_integer(cord_x)) srl 1;
+    if (cord_y > 0) then -- here to prevent drawing on the other side of screen
+      screen(to_integer(cord_y - 1)) <= ((("00000" & figure(0)) sll to_integer(cord_x)) srl 1);
+    end if;
+
+    screen(to_integer(cord_y)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
+
+    if (cord_y < 6) then -- here to prevent drawing on the other side of screen
+      screen(to_integer(cord_y + 1)) <= ((("00000" & figure(2)) sll to_integer(cord_x)) srl 1);
+    end if;
 
   end process; -- identifier
 

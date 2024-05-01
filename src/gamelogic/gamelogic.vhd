@@ -25,7 +25,7 @@ architecture rtl of gamelogic is
   signal count : unsigned(27 downto 0);
 
   signal line      : unsigned(2 downto 0) := "000";
-  signal curFigure : unsigned(2 downto 0) := "010";
+  signal curFigure : unsigned(2 downto 0) := "000";
 
   signal limitAbsRight : unsigned(2 downto 0);
   signal limitAbsLeft  : unsigned(2 downto 0);
@@ -65,13 +65,13 @@ begin
       count <= count + 1;
 
       -- detect bottom of screen
-      if (screen_fig(6) > 0) then
-        count <= (others => '0');
+      -- if (screen_fig(6) > 0) then
+      --   count <= (others => '0');
 
-        saveFigureToBarrier: for i in 0 to 6 loop
-          screen_barrier(i) <= screen_barrier(i) or screen_fig(i);
-        end loop;
-      end if;
+      --   saveFigureToBarrier: for i in 0 to 6 loop
+      --     screen_barrier(i) <= screen_barrier(i) or screen_fig(i);
+      --   end loop;
+      -- end if;
 
       --detect collisions
       detectCollsion: for i in 0 to 6 loop
@@ -107,7 +107,7 @@ begin
     port map (
       figureID => curFigure,
       cord_x   => location,
-      cord_y   => line - 1,
+      cord_y   => (line-1),
       screen   => screen_fig
     );
 
