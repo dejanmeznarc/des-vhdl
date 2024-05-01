@@ -16,18 +16,23 @@ architecture rtl of control is
   signal btn0 : unsigned(1 downto 0);
   signal btn1 : unsigned(1 downto 0);
 
+  type clicks_t is array (3 downto 0) of std_logic;
+  signal clicks : clicks_t;
+
 begin
+  clickDetector: for i in 0 to 3 generate
+    u4: entity work.btn_click_detector
+      port map (
+        clk    => clk,
+        button => buttons(i),
+        click  => clicks(i)
+      );
+  end generate;
 
   identifier: process (clk)
   begin
     if rising_edge(clk) then
-
-      btn0 <= btn0(0) & buttons(0);
-      pin_led(7 downto 6) <= btn0;
-
-      btn1 <= btn1(0) & buttons(1);
-
-      if (btn0 = "01") then
+      if (clicks(0) = '1') then
         if (loc_x >= 4) then
           loc_x <= "100";
         else
@@ -35,7 +40,7 @@ begin
         end if;
       end if;
 
-      if (btn1 = "01") then
+      if (clicks(1) = '1') then
         if (loc_x <= 0) then
           loc_x <= "000";
         else
