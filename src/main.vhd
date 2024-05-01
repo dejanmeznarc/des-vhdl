@@ -49,17 +49,10 @@ begin
     port map (
       clk      => clk,
       buttons  => buttonData,
-      matrix   => matrixData,
+      screen   => screen,
       pin_addr => pin_io_addr,
       pin_data => pin_io_data,
       pin_clk  => pin_io_clkout
-    );
-
-  matrix_inst: entity work.matrix
-    port map (
-      clk         => counter(5), -- needs to be at least 4x slower than interface clock
-      matrix_data => matrixData,
-      screen      => screen
     );
 
   gpu_driver_inst: entity work.gpu_driver

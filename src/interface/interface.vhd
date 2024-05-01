@@ -1,12 +1,13 @@
 library IEEE;
   use IEEE.std_logic_1164.all;
   use IEEE.numeric_std.all;
+  use work.screen_pkg.all;
 
 entity interface is
   port (
-    clk      : in    std_logic; -- WARN: needs 4 cycles to sync all data
+    clk      : in    std_logic;
     buttons  : out   unsigned(3 downto 0);
-    matrix   : in    unsigned(7 downto 0);
+    screen   : in    screen_t;
 
     pin_addr : out   std_logic_vector(1 downto 0);
     pin_data : inout std_logic_vector(7 downto 0);
@@ -16,31 +17,33 @@ entity interface is
 end entity;
 
 architecture rtl of interface is
-  signal address     : unsigned(1 downto 0) := "00";
-  signal buttonsData : unsigned(3 downto 0);
+  signal matrixData  : unsigned(7 downto 0);
+  signal clk_counter : unsigned(31 downto 0);
+
 begin
 
-  addressChooser: process (clk)
-  begin
-    if rising_edge(clk) then
-      address <= address + 1;
+  interface_clock_divider_inst: entity work.interface_clock_divider
+    port map (
+      clk     => clk,
+      counter => clk_counter
+    );
 
-      -- dont waste clock cycles for unimplemented stuff
-      if (address = "11") then
-        address <= "01";
-      end if;
+  -- IO interface manages mux at the daughterboard
+  io_interface_inst: entity work.io_interface
+    port map (
+      clk        => clk,
+      buttons    => buttons,
+      matrixData => matrixData,
+      pin_addr   => pin_addr,
+      pin_data   => pin_data,
+      pin_clk    => pin_clk
+    );
 
-    end if;
-    end process; -- addressChooser
-
-  pin_clk  <= clk;
-  pin_addr <= std_logic_vector(address);
-  pin_data <= (others => 'Z')             when address = "01" else -- read mode
-               (std_logic_vector(matrix)) when address = "10" else -- write matrix
-               (others => 'Z'); -- others (not yet defined)
-
-  -- TODO: find better way of storing button state. (without creating another signal)
-  buttonsData <= unsigned(pin_data(3 downto 0)) when address = "01" else buttonsData;
-  buttons     <= buttonsData;
+  matrix_inst: entity work.matrix
+    port map (
+      clk         => clk_counter(5), -- interface needs 4cycles to update, thats why be slower
+      matrix_data => matrixData,
+      screen      => screen
+    );
 
 end architecture;
