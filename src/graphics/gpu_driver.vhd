@@ -21,23 +21,23 @@ architecture rtl of gpu_driver is
 
 begin
 
-  identifier: process (clk)
-  begin
-    if rising_edge(clk) then
-      if (counter > 7) then
-        counter <= (others => '0');
-      else
-        counter <= counter + 1;
-      end if;
-    end if;
-  end process; -- identifier
+  -- identifier: process (clk)
+  -- begin
+  --   if rising_edge(clk) then
+  --     if (counter > 7) then
+  --       counter <= (others => '0');
+  --     else
+  --       counter <= counter + 1;
+  --     end if;
+  --   end if;
+  -- end process; -- identifier
 
-  gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
-    port map (
-      figureID => figure,
-      cord_x   => offset_x,
-      cord_y   => offset_y,
-      screen   => screen
-    );
+  -- gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
+  --   port map (
+  --     figureID => figure,
+  --     cord_x   => offset_x,
+  --     cord_y   => offset_y,
+  --     screen   => screen
+  --   );
 
 end architecture;

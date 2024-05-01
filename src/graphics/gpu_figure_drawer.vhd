@@ -10,8 +10,7 @@ entity gpu_firuge_drawer is
     figureID : in  unsigned(2 downto 0);                    -- wha fig to display
 
     cord_x   : in  unsigned(2 downto 0) := (others => '0'); -- col
-    cord_y   : in  unsigned(2 downto 0) := (others => '0'); -- line
-
+    cord_y   : in  integer range - 1 to 6;
     screen   : out screen_t
   );
 end entity;
@@ -30,13 +29,15 @@ begin
     screen <= (others => (others => '0'));
 
     if (cord_y > 0) then -- here to prevent drawing on the other side of screen
-      screen(to_integer(cord_y - 1)) <= ((("00000" & figure(0)) sll to_integer(cord_x)) srl 1);
+      screen((cord_y - 1)) <= ((("00000" & figure(0)) sll to_integer(cord_x)) srl 1);
     end if;
 
-    screen(to_integer(cord_y)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
+    if (cord_y > 0) then
+      screen((cord_y)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
+    end if;
 
     if (cord_y < 6) then -- here to prevent drawing on the other side of screen
-      screen(to_integer(cord_y + 1)) <= ((("00000" & figure(2)) sll to_integer(cord_x)) srl 1);
+      screen((cord_y + 1)) <= ((("00000" & figure(2)) sll to_integer(cord_x)) srl 1);
     end if;
 
   end process; -- identifier
