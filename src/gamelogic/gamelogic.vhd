@@ -89,9 +89,16 @@ begin
       end if;
 
       if (reset = '1') then -- reset
+
         count <= (others => '0');
         --location <= (others => '0');
         looseFlag <= '0';
+
+        if (curFigure > 3) then
+          curFigure <= (others => '0');
+        else
+          curFigure <= curFigure + 1;
+        end if;
 
         clearall: for i in 0 to 6 loop
           screen_barrier(i) <= (others => '0');
