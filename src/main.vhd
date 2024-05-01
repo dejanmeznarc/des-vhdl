@@ -14,18 +14,11 @@ entity main is
 end entity;
 
 architecture RTL of main is
-
-  signal matrixData     : unsigned(7 downto 0);
-  signal buttonData     : unsigned(3 downto 0);
-  signal buttonDataPrev : unsigned(3 downto 0);
-
-  signal matrixLine : unsigned(4 downto 0);
-
   signal counter : unsigned(24 downto 0);
-  signal janez   : unsigned(24 downto 0);
-
   signal offset  : unsigned(2 downto 0) := (others => '0');
   signal offset2 : unsigned(2 downto 0) := (others => '0');
+
+  signal buttonData      : unsigned(3 downto 0);
 
   signal screen : screen_t := (
     "11111",
@@ -43,31 +36,37 @@ begin
     if (rising_edge(clk)) then
       counter <= counter + 1;
     end if;
+
   end process; -- identifier
 
   interface_inst: entity work.interface
     port map (
-      clk      => clk,
-      buttons  => buttonData,
-      screen   => screen,
-      pin_addr => pin_io_addr,
-      pin_data => pin_io_data,
-      pin_clk  => pin_io_clkout,
-      pin_led => pin_led
+      clk       => clk,
+      buttons   => buttonData,
+
+      screen    => screen,
+      pin_addr  => pin_io_addr,
+      pin_data  => pin_io_data,
+      pin_clk   => pin_io_clkout
     );
 
-  gpu_driver_inst: entity work.gpu_driver
+  control_inst: entity work.control
     port map (
-      clk      => counter(24),
-      screen   => screen,
-      offset_x => offset,
-      offset_y => offset2
+      clk       => clk,
+      pin_led   => pin_led,
+      buttons   => buttonData
     );
 
+  -- gpu_driver_inst: entity work.gpu_driver
+  --   port map (
+  --     clk      => counter(24),
+  --     screen   => screen,
+  --     offset_x => offset,
+  --     offset_y => offset2
+  --   );
   --  mikro: process (buttonData, counter(10))
   -- begin
   --   if (rising_edge(counter(14))) then
-
   --     if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
   --       if (offset >= 4) then
   --         offset <= "100";
@@ -82,7 +81,6 @@ begin
   --         offset <= offset - 1;
   --       end if;
   --     end if;
-
   --     if (buttonData(2) = '1' and buttonDataPrev(2) = '0') then
   --       if (offset2 >= 6) then
   --         offset2 <= "110";
@@ -90,7 +88,6 @@ begin
   --         offset2 <= offset2 + 1;
   --       end if;
   --     end if;
-
   --     if (buttonData(3) = '1' and buttonDataPrev(3) = '0') then
   --       if (offset2 <= 0) then
   --         offset2 <= "000";
@@ -98,18 +95,12 @@ begin
   --         offset2 <= offset2 - 1;
   --       end if;
   --     end if;
-
   --     if (offset2 > 6) then
   --       offset2 <= (others => '0');
   --     end if;
-
   --     buttonDataPrev <= buttonData;
-
   --   end if;
   -- end process; -- mikro
-
   -- pin_led(2 downto 0) <= offset(2 downto 0);
-
   -- pin_led(7 downto 5) <= offset2(2 downto 0);
-
 end architecture;

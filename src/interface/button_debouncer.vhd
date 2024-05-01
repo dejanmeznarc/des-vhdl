@@ -5,9 +5,10 @@ library IEEE;
 
 entity button_debouncer is
   port (
-    clk     : in  std_logic;
-    btn_in  : in  std_logic;
-    button  : out std_logic
+    clk         : in  std_logic;
+    btn_in      : in  std_logic;
+    btn_pressed : out std_logic
+    -- btn_clicked : out std_logic
   );
 end entity;
 
@@ -25,7 +26,7 @@ begin
     end if;
   end process; -- btn_shift_reg
 
-  dummyButton <= '1' when history(7 downto 0) = "11111111" else '0';
-  button      <= dummyButton;
+  btn_pressed <= '1' when history(7 downto 0) = "11111111" else '0';
+  -- btn_clicked <= '1' when history(7 downto 0) = "00001111" else '0';
   --pin_led(0)  <= dummyButton;
 end architecture;

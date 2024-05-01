@@ -17,9 +17,9 @@ begin
   allBtns: for i in 0 to 3 generate
     name: entity work.button_debouncer
       port map (
-        clk    => clk,
-        btn_in => btn_in(i),
-        button => buttons(i)
+        clk         => clk,
+        btn_in      => btn_in(i),
+        btn_pressed => buttons(i)
       );
   end generate;
 end architecture; -- arch

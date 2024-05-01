@@ -8,7 +8,8 @@ entity gpu_driver is
     clk      : in     std_logic;
     screen   : buffer screen_t;
     offset_x : in     unsigned(2 downto 0) := (others => '0');
-    offset_y : in     unsigned(2 downto 0) := (others => '0')
+    offset_y : in     unsigned(2 downto 0) := (others => '0');
+    figure   : in     unsigned(2 downto 0) := (others => '0')
   );
 end entity;
 
@@ -16,7 +17,7 @@ architecture rtl of gpu_driver is
 
   signal counter : unsigned(5 downto 0);
 
-  signal figure : unsigned(2 downto 0) := (others => '0');
+  --signal figure : unsigned(2 downto 0) := (others => '0');
 
 begin
 

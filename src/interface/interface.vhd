@@ -5,14 +5,14 @@ library IEEE;
 
 entity interface is
   port (
-    clk      : in    std_logic;
-    buttons  : out   unsigned(3 downto 0);
-    screen   : in    screen_t;
+    clk       : in    std_logic;
+    buttons   : out   unsigned(3 downto 0);
+    btn_click : out   unsigned(3 downto 0);
+    screen    : in    screen_t;
 
-    pin_addr : out   std_logic_vector(1 downto 0);
-    pin_data : inout std_logic_vector(7 downto 0);
-    pin_clk  : out   std_logic;
-    pin_led  : out   unsigned(7 downto 0)
+    pin_addr  : out   std_logic_vector(1 downto 0);
+    pin_data  : inout std_logic_vector(7 downto 0);
+    pin_clk   : out   std_logic
   );
 
 end entity;
@@ -53,9 +53,9 @@ begin
 
   buttons_inst: entity work.buttons
     port map (
-      clk     => slowClk,
-      btn_in  => buttonData,
-      buttons => buttons
+      clk       => slowClk,
+      btn_in    => buttonData,
+      buttons   => buttons
     );
 
 end architecture;
