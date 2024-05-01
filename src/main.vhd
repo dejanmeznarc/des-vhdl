@@ -52,7 +52,8 @@ begin
       screen   => screen,
       pin_addr => pin_io_addr,
       pin_data => pin_io_data,
-      pin_clk  => pin_io_clkout
+      pin_clk  => pin_io_clkout,
+      pin_led => pin_led
     );
 
   gpu_driver_inst: entity work.gpu_driver
@@ -63,52 +64,52 @@ begin
       offset_y => offset2
     );
 
-  mikro: process (buttonData, counter(10))
-  begin
-    if (rising_edge(counter(14))) then
+  --  mikro: process (buttonData, counter(10))
+  -- begin
+  --   if (rising_edge(counter(14))) then
 
-      if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
-        if (offset >= 4) then
-          offset <= "100";
-        else
-          offset <= offset + 1;
-        end if;
-      end if;
-      if (buttonData(1) = '1' and buttonDataPrev(1) = '0') then
-        if (offset <= 0) then
-          offset <= "000";
-        else
-          offset <= offset - 1;
-        end if;
-      end if;
+  --     if (buttonData(0) = '1' and buttonDataPrev(0) = '0') then
+  --       if (offset >= 4) then
+  --         offset <= "100";
+  --       else
+  --         offset <= offset + 1;
+  --       end if;
+  --     end if;
+  --     if (buttonData(1) = '1' and buttonDataPrev(1) = '0') then
+  --       if (offset <= 0) then
+  --         offset <= "000";
+  --       else
+  --         offset <= offset - 1;
+  --       end if;
+  --     end if;
 
-      if (buttonData(2) = '1' and buttonDataPrev(2) = '0') then
-        if (offset2 >= 6) then
-          offset2 <= "110";
-        else
-          offset2 <= offset2 + 1;
-        end if;
-      end if;
+  --     if (buttonData(2) = '1' and buttonDataPrev(2) = '0') then
+  --       if (offset2 >= 6) then
+  --         offset2 <= "110";
+  --       else
+  --         offset2 <= offset2 + 1;
+  --       end if;
+  --     end if;
 
-      if (buttonData(3) = '1' and buttonDataPrev(3) = '0') then
-        if (offset2 <= 0) then
-          offset2 <= "000";
-        else
-          offset2 <= offset2 - 1;
-        end if;
-      end if;
+  --     if (buttonData(3) = '1' and buttonDataPrev(3) = '0') then
+  --       if (offset2 <= 0) then
+  --         offset2 <= "000";
+  --       else
+  --         offset2 <= offset2 - 1;
+  --       end if;
+  --     end if;
 
-      if (offset2 > 6) then
-        offset2 <= (others => '0');
-      end if;
+  --     if (offset2 > 6) then
+  --       offset2 <= (others => '0');
+  --     end if;
 
-      buttonDataPrev <= buttonData;
+  --     buttonDataPrev <= buttonData;
 
-    end if;
-  end process; -- mikro
+  --   end if;
+  -- end process; -- mikro
 
-  pin_led(2 downto 0) <= offset(2 downto 0);
+  -- pin_led(2 downto 0) <= offset(2 downto 0);
 
-  pin_led(7 downto 5) <= offset2(2 downto 0);
+  -- pin_led(7 downto 5) <= offset2(2 downto 0);
 
 end architecture;

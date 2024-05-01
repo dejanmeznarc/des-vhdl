@@ -11,13 +11,15 @@ entity interface is
 
     pin_addr : out   std_logic_vector(1 downto 0);
     pin_data : inout std_logic_vector(7 downto 0);
-    pin_clk  : out   std_logic
+    pin_clk  : out   std_logic;
+    pin_led  : out   unsigned(7 downto 0)
   );
 
 end entity;
 
 architecture rtl of interface is
   signal matrixData  : unsigned(7 downto 0);
+  signal buttonData  : unsigned(3 downto 0);
   signal clk_counter : unsigned(31 downto 0);
 
 begin
@@ -32,7 +34,7 @@ begin
   io_interface_inst: entity work.io_interface
     port map (
       clk        => clk,
-      buttons    => buttons,
+      buttons    => buttonData,
       matrixData => matrixData,
       pin_addr   => pin_addr,
       pin_data   => pin_data,
@@ -44,6 +46,14 @@ begin
       clk         => clk_counter(5), -- interface needs 4cycles to update, thats why be slower
       matrix_data => matrixData,
       screen      => screen
+    );
+
+  buttons_inst: entity work.buttons
+    port map (
+      clk     => clk_counter(5),
+      btn_in  => buttonData,
+      buttons => buttons,
+      pin_led => pin_led
     );
 
 end architecture;
