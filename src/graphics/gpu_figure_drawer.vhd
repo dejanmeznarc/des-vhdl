@@ -17,8 +17,6 @@ end entity;
 
 architecture rtl of gpu_firuge_drawer is
   signal figure : figure_t;
-
-  signal janez : unsigned(4 downto 0);
 begin
 
   figure <= figuresRom(to_integer(figureID));

@@ -46,7 +46,6 @@ begin
     port map (
       clk      => clk,
       buttons  => buttonData,
-
       screen   => screen,
       pin_addr => pin_io_addr,
       pin_data => pin_io_data,

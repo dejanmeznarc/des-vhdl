@@ -5,22 +5,20 @@ library IEEE;
 
 entity interface is
   port (
-    clk       : in    std_logic;
-    buttons   : out   unsigned(3 downto 0);
-    btn_click : out   unsigned(3 downto 0);
-    screen    : in    screen_t;
+    clk      : in    std_logic;
+    buttons  : out   unsigned(3 downto 0);
+    screen   : in    screen_t;
 
-    pin_addr  : out   std_logic_vector(1 downto 0);
-    pin_data  : inout std_logic_vector(7 downto 0);
-    pin_clk   : out   std_logic
+    pin_addr : out   std_logic_vector(1 downto 0);
+    pin_data : inout std_logic_vector(7 downto 0);
+    pin_clk  : out   std_logic
   );
 
 end entity;
 
 architecture rtl of interface is
-  signal matrixData  : unsigned(7 downto 0);
-  signal buttonData  : unsigned(3 downto 0);
-  signal clk_counter : unsigned(31 downto 0);
+  signal matrixData : unsigned(7 downto 0);
+  signal buttonData : unsigned(3 downto 0);
 
   signal slowClk : std_logic := '0';
 
@@ -28,9 +26,8 @@ begin
 
   interface_clock_divider_inst: entity work.interface_clock_divider
     port map (
-      clk     => clk,
-      clk2    => slowClk,
-      counter => clk_counter
+      clk  => clk,
+      clk2 => slowClk
     );
 
   -- IO interface manages mux at the daughterboard
@@ -53,9 +50,9 @@ begin
 
   buttons_inst: entity work.buttons
     port map (
-      clk       => slowClk,
-      btn_in    => buttonData,
-      buttons   => buttons
+      clk     => slowClk,
+      btn_in  => buttonData,
+      buttons => buttons
     );
 
 end architecture;
