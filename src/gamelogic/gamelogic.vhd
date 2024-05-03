@@ -24,8 +24,9 @@ end entity;
 architecture rtl of gamelogic is
   signal count : unsigned(27 downto 0);
 
-  signal line      : unsigned(2 downto 0) := "000";
-  signal curFigure : unsigned(2 downto 0) := "000";
+  signal line : unsigned(2 downto 0) := "000";
+
+  signal curFigure : unsigned(2 downto 0) := "011";
 
   signal limitAbsRight : unsigned(2 downto 0);
   signal limitAbsLeft  : unsigned(2 downto 0);
@@ -94,12 +95,11 @@ begin
         --location <= (others => '0');
         looseFlag <= '0';
 
-        if (curFigure > 3) then
-          curFigure <= (others => '0');
-        else
-          curFigure <= curFigure + 1;
-        end if;
-
+        -- if (curFigure > 3) then
+        --   curFigure <= (others => '0');
+        -- else
+        --   curFigure <= curFigure + 1;
+        -- end if;
         clearall: for i in 0 to 6 loop
           screen_barrier(i) <= (others => '0');
         end loop;
@@ -127,8 +127,8 @@ begin
 
   reset <= btns(2) and btns(3);
 
-  locLimitL            <= limitAbsLeft;
-  locLimitR            <= limitAbsRight;
-  pin_leds(7 downto 5) <= limitAbsLeft;
-  pin_leds(2 downto 0) <= limitAbsRight;
+  locLimitL <= limitAbsLeft;
+  locLimitR <= limitAbsRight;
+  --pin_leds(7 downto 5) <= limitAbsLeft;
+  --pin_leds(2 downto 0) <= limitAbsRight;
 end architecture;
