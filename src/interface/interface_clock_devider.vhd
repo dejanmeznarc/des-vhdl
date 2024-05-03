@@ -5,9 +5,9 @@ library IEEE;
 
 entity interface_clock_divider is
   port (
-    clk     : in  std_logic;
-    clk2    : out std_logic; -- clock with interface delay in mind
-    counter : out unsigned(31 downto 0) := (others => '0')
+    clk  : in  std_logic;
+    clk2 : out std_logic -- clock with interface delay in mind
+    --counter : out unsigned(31 downto 0) := (others => '0')
   );
 end entity;
 
@@ -25,6 +25,5 @@ begin
     end if;
   end process; -- interface_clock_divider
 
-  counter <= count;
-
+  --counter <= count;
 end architecture;

@@ -129,6 +129,6 @@ begin
 
   locLimitL <= limitAbsLeft;
   locLimitR <= limitAbsRight;
-  --pin_leds(7 downto 5) <= limitAbsLeft;
-  --pin_leds(2 downto 0) <= limitAbsRight;
+  pin_leds(7 downto 5) <= limitAbsLeft;
+  pin_leds(2 downto 0) <= limitAbsRight;
 end architecture;

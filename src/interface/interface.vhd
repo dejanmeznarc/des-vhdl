@@ -17,9 +17,8 @@ entity interface is
 end entity;
 
 architecture rtl of interface is
-  signal matrixData  : unsigned(7 downto 0);
-  signal buttonData  : unsigned(3 downto 0);
-  signal clk_counter : unsigned(31 downto 0);
+  signal matrixData : unsigned(7 downto 0);
+  signal buttonData : unsigned(3 downto 0);
 
   signal slowClk : std_logic := '0';
 
@@ -27,9 +26,8 @@ begin
 
   interface_clock_divider_inst: entity work.interface_clock_divider
     port map (
-      clk     => clk,
-      clk2    => slowClk,
-      counter => clk_counter
+      clk  => clk,
+      clk2 => slowClk
     );
 
   -- IO interface manages mux at the daughterboard
