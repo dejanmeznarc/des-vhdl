@@ -15,7 +15,7 @@ end entity;
 architecture rtl of button_debouncer is
   signal history : unsigned(7 downto 0) := (others => '0');
 
-  signal dummyButton : std_logic := '0';
+  --signal dummyButton : std_logic := '0';
 
 begin
 
