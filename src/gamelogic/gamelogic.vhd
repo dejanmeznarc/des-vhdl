@@ -2,41 +2,25 @@ library IEEE;
   use IEEE.std_logic_1164.all;
   use IEEE.numeric_std.all;
   use work.screen_pkg.all;
-
-library ieee;
-  use ieee.std_logic_1164.all;
-  use ieee.numeric_std.all;
+  use work.figure_type.all;
+  use work.figures.all;
 
 entity gamelogic is
 
   port (
-    clk       : in  std_logic;
-    location  : in  unsigned(2 downto 0);
-    locLimitR : out unsigned(2 downto 0) := "010";
-    locLimitL : out unsigned(2 downto 0) := "100";
-    screen    : out screen_t;
-    pin_leds  : out unsigned(7 downto 0);
-    btns      : in  unsigned(3 downto 0)
+    clk      : in  std_logic;
+    screen   : out screen_t;
+    pin_leds : out unsigned(7 downto 0);
+    btns     : in  unsigned(3 downto 0);
+    clicks   : in  unsigned(3 downto 0)
 
   );
 end entity;
 
 architecture rtl of gamelogic is
-  signal count : unsigned(27 downto 0);
-
-  signal line : unsigned(2 downto 0) := "000";
-
-  signal curFigure : unsigned(2 downto 0) := "011";
-
-  signal limitAbsRight : unsigned(2 downto 0);
-  signal limitAbsLeft  : unsigned(2 downto 0);
-
-  signal screen_fig     : screen_t := (others => (others => '0'));
-  signal screen_barrier : screen_t := (others => (others => '0'));
-
-  signal screen_combined : screen_t := (others => (others => '0'));
-
-  signal screen_game_over : screen_t := (
+  signal screenBarrier  : screen_t := (others => (others => '0'));
+  signal screenFig      : screen_t := (others => (others => '0'));
+  signal screenGameOver : screen_t := (
     "00000",
     "01000",
     "01000",
@@ -46,89 +30,126 @@ architecture rtl of gamelogic is
     "00000"
   );
 
-  signal reset     : std_logic := '0';
-  signal looseFlag : std_logic := '0';
+  signal currentLine : unsigned(2 downto 0) := "000";
+
+  signal location : unsigned(2 downto 0);
+
+  signal figureId : unsigned(2 downto 0) := "010";
+
+  signal looser : std_logic := '0';
+
+  signal counter : unsigned(27 downto 0);
+  signal random  : unsigned(7 downto 0);
 begin
 
-  line <= line when looseFlag = '1' else count(27 downto 25);
-
-  figLimitFinder_inst: entity work.figLimitFinder
+  random_inst: entity work.random
     port map (
-      figureID   => curFigure,
-      limitLeft  => limitAbsLeft,
-      limitRight => limitAbsRight
+      clk    => clk,
+      number => random
     );
 
-  identifier: process (clk)
+  movement_control: process (clk)
+    variable limitRight      : unsigned(2 downto 0);
+    variable limitLeft       : unsigned(2 downto 0);
+    variable virtualLocation : unsigned(2 downto 0);
+
   begin
     if rising_edge(clk) then
 
-      count <= count + 1;
+      -- clock
+      if (counter > 2 ** 26) then
+        counter <= (others => '0');
+        if (currentLine >= 7) then
+          currentLine <= (others => '0');
+        else
+          currentLine <= currentLine + 1;
+        end if;
+      else
+        counter <= counter + 1;
+      end if;
 
-      -- detect bottom of screen
-      if (screen_fig(6) > 0) then
-        count <= (others => '0');
-        saveFigureToBarrier: for i in 0 to 6 loop
-          screen_barrier(i) <= screen_barrier(i) or screen_fig(i);
+      -- default limits
+      limitRight := "000";
+      limitLeft := "100";
+
+      calc_limits: for i in 0 to 6 loop
+        -- shift figure screen 1 bit to the left and compare it to the barrier. (simulate movement)
+        -- also add '1' on side of barrier screen to form screen edge
+        if (('1' & screenBarrier(i)) and (('0' & screenFig(i)) sll 1)) > 0 then
+          limitLeft := location;
+        end if;
+
+        -- do same for the other side
+        if ((screenBarrier(i) & '1') and ((screenFig(i) & '0') srl 1)) > 0 then
+          limitRight := location;
+        end if;
+      end loop;
+
+      -- process user left/right interaction and constrain it.
+      if (looser = '0') then
+        if (clicks(0) = '1') then
+          if (virtualLocation < limitLeft) then
+            virtualLocation := virtualLocation + 1;
+          end if;
+        elsif (clicks(1) = '1') then
+          if (virtualLocation > limitRight) then
+            virtualLocation := virtualLocation - 1;
+          end if;
+        end if;
+      end if;
+
+      -- detect bottom
+      bottom_detection: if (screenFig(6) > 0) then
+        currentLine <= (others => '0');
+        figureId <= random(3 downto 1);
+
+        saveFigToBarrier: for i in 1 to 6 loop
+          screenBarrier(i) <= screenBarrier(i) or screenFig(i);
         end loop;
       end if;
-      --detect collisions
-      detectCollsion: for i in 0 to 6 loop
-        if (screen_fig(i) and screen_barrier(i)) > 0 then
-          count <= (others => '0');
+
+      -- detect collision
+      collision_detection: for i in 0 to 6 loop
+        if (screenFig(i) and screenBarrier(i)) > 0 then
+          currentLine <= (others => '0');
+          figureId <= random(3 downto 1);
 
           saveFigToBarrier2: for i in 1 to 6 loop
-            screen_barrier(i - 1) <= screen_barrier(i - 1) or screen_fig(i);
+            screenBarrier(i - 1) <= screenBarrier(i - 1) or screenFig(i);
           end loop;
 
         end if;
       end loop;
 
-      --- looser detection
-      if (((screen_barrier(0)) > 0)) then
-        looseFlag <= '1';
+      -- detect loose scenario
+      looser_detection: if (screenFig(0) and screenBarrier(0)) > 0 then
+        currentLine <= (others => '0');
+        pin_leds <= (others => '1');
+        looser <= '1';
       end if;
 
-      if (reset = '1') then -- reset
-
-        count <= (others => '0');
-        --location <= (others => '0');
-        looseFlag <= '0';
-
-        -- if (curFigure > 3) then
-        --   curFigure <= (others => '0');
-        -- else
-        --   curFigure <= curFigure + 1;
-        -- end if;
-        clearall: for i in 0 to 6 loop
-          screen_barrier(i) <= (others => '0');
-        end loop;
+      reset_detection: if (btns(3) and btns(2)) = '1' then
+        screenBarrier <= (others => (others => '0'));
+        currentLine <= (others => '0');
+        figureId <= random(3 downto 1);
+        pin_leds <= (others => '0');
+        looser <= '0';
       end if;
 
     end if;
-  end process; -- identifier
+    location <= virtualLocation;
+  end process;
 
-  gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
+  draw_figure_screen: entity work.figure_drawer
     port map (
-      figureID => curFigure,
+      figureID => figureId,
       cord_x   => location,
-      cord_y   => (to_integer(line) - 1),
-      screen   => screen_fig
+      cord_y   => to_integer(currentLine) - 1, -- shift one line up to achive falling effect (so it doesnt just appear on the screen)
+      screen   => screenFig
     );
 
-  combineScreens: for i in 0 to 6 generate
-    screen_combined(i) <= screen_barrier(i) or screen_fig(i);
+  combine_screens: for i in 0 to 6 generate
+    screen(i) <= (screenFig(i) or screenBarrier(i)) when looser = '0' else screenGameOver(i);
   end generate;
 
-  screen <= screen_barrier   when btns(2) = '1' else
-            screen_fig       when btns(3) = '1' else
-            screen_game_over when looseFlag = '1' else
-            screen_combined;
-
-  reset <= btns(2) and btns(3);
-
-  locLimitL <= limitAbsLeft;
-  locLimitR <= limitAbsRight;
-  pin_leds(7 downto 5) <= limitAbsLeft;
-  pin_leds(2 downto 0) <= limitAbsRight;
 end architecture;

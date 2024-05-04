@@ -20,7 +20,9 @@ begin
 
   process (clk)
   begin
-    if rising_edge(clk) then
+    -- reason to use falling edge here: 
+    -- limits are updated in rising edge clock
+    if falling_edge(clk) then
       if (up = '1') then
         if (num >= limitUp) then
           num <= limitUp;

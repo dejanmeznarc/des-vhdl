@@ -4,7 +4,8 @@ library IEEE;
 
 package figure_type is
   type figure_t is array (0 to 2) of unsigned(0 to 2);
-  type figures_t is array (0 to 3) of figure_t;
+
+  type figures_t is array (0 to 7) of figure_t;
 
 
 end package;
