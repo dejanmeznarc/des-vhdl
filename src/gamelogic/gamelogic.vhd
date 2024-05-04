@@ -54,8 +54,12 @@ begin
     );
 
   movement_control: process (clk)
-    variable limitRight      : unsigned(2 downto 0);
-    variable limitLeft       : unsigned(2 downto 0);
+    variable limitRight : unsigned(2 downto 0);
+    variable limitLeft  : unsigned(2 downto 0);
+
+    variable limitRotCW  : std_logic;
+    variable limitRotCCW : std_logic;
+
     variable virtualLocation : unsigned(2 downto 0);
 
   begin
@@ -78,16 +82,21 @@ begin
       limitRight := "000";
       limitLeft := "100";
 
+      limitRotCCW := '0';
+      limitRotCW := '0';
+
       calc_limits: for i in 0 to 6 loop
         -- shift figure screen 1 bit to the left and compare it to the barrier. (simulate movement)
         -- also add '1' on side of barrier screen to form screen edge
         if (('1' & screenBarrier(i)) and (('0' & screenFig(i)) sll 1)) > 0 then
           limitLeft := location;
+          limitRotCCW := '1'; --dummy rotatoin limitor, it works in most cases TODO: better one.
         end if;
 
         -- do same for the other side
         if ((screenBarrier(i) & '1') and ((screenFig(i) & '0') srl 1)) > 0 then
           limitRight := location;
+          limitRotCW := '1';
         end if;
       end loop;
 
@@ -107,11 +116,11 @@ begin
             virtualLocation := virtualLocation - 1;
           end if;
 
-        elsif (clicks(2) = '1') then --rotate CCW
+        elsif (clicks(2) = '1') and (limitRotCCW = '0') then --rotate CCW
           song <= s_move;
           songPlay <= '1';
           rotation <= rotation - 1;
-        elsif (clicks(3) = '1') then -- rotate CW
+        elsif (clicks(3) = '1') and (limitRotCW = '0') then -- rotate CW
           song <= s_move;
           songPlay <= '1';
           rotation <= rotation + 1;
