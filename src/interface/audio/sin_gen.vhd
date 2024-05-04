@@ -3,15 +3,13 @@ library IEEE;
   use IEEE.numeric_std.all;
 
 entity sin_gen is
-  generic (
-    STEP : integer := 172
-  );
   port (
     clk          : in  std_logic;
     en           : in  std_logic;
 
-    analogOutput : out unsigned(7 downto 0)
+    step         : in  unsigned(7 downto 0);
 
+    analogOutput : out unsigned(7 downto 0)
   );
 
 end entity;
@@ -35,7 +33,7 @@ begin
   process (en)
   begin
     if rising_edge(en) then
-      counter <= counter + STEP;
+      counter <= counter + step;
 
       if (counter(14) = '1') then
         adr <= counter(13 downto 11);

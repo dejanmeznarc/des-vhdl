@@ -64,7 +64,7 @@ begin
     port map (
       clk    => clk,
       pwmClk => pwmClk,
-      tone   => "001",
+      tone   => "000",
       output => audio
     );
 

@@ -19,8 +19,17 @@ entity audio is
 end entity;
 
 architecture rtl of audio is
-
   signal audioAnalog : unsigned(7 downto 0);
+
+  type tonemap_t is array (0 to 4) of unsigned(7 downto 0);
+  signal tonemap : tonemap_t := (-- TODO: use actual tones
+    x"00",
+    x"A0",
+    x"B9",
+    x"D3",
+    x"F7"
+  );
+
 begin
 
   --- audio
@@ -28,6 +37,7 @@ begin
     port map (
       clk          => clk,
       en           => pwmClk,
+      step         => tonemap(to_integer(tone)),
       analogOutput => audioAnalog
     );
 
