@@ -6,6 +6,11 @@ library IEEE;
   use work.figures.all;
 
 entity figure_drawer is
+
+  generic (
+    SIZE : natural := 2 -- (figure size -1) 2x2->1 or 3x3 -> 2
+  );
+
   port (
     figureID : in  unsigned(2 downto 0);                    -- wha fig to display
 
@@ -38,25 +43,25 @@ begin
 
     elsif (rotation = 1) then
       -- zasuk za 90 deg
-      for j in 0 to 2 loop
-        for i in 0 to 2 loop
-          rotatedFig(j)(i) := fig(2 - i)(j);
+      for j in 0 to SIZE loop
+        for i in 0 to SIZE loop
+          rotatedFig(j)(i) := fig(SIZE - i)(j);
         end loop;
       end loop;
 
     elsif (rotation = 2) then
       -- zasuk 2 (za 180deg)
-      for j in 0 to 2 loop
-        for i in 0 to 2 loop
-          rotatedFig(i)(2-j) := fig(2-i)(j);
+      for j in 0 to SIZE loop
+        for i in 0 to SIZE loop
+          rotatedFig(i)(SIZE - j) := fig(SIZE - i)(j);
         end loop;
       end loop;
 
     elsif (rotation = 3) then
       -- zasuk za 270 deg
-      for j in 0 to 2 loop
-        for i in 0 to 2 loop
-          rotatedFig(2 - j)(i) := fig(i)(j);
+      for j in 0 to SIZE loop
+        for i in 0 to SIZE loop
+          rotatedFig(SIZE - j)(i) := fig(i)(j);
         end loop;
       end loop;
     end if;
@@ -78,8 +83,11 @@ begin
       screen((cord_y)) <= (("00000" & figure(1)) sll to_integer(cord_x)) srl 1;
     end if;
 
-    if (cord_y < 6) then -- here to prevent drawing on the other side of screen
-      screen((cord_y + 1)) <= ((("00000" & figure(2)) sll to_integer(cord_x)) srl 1);
+    -- draw third line, only if fgure is 3x3
+    if (SIZE = 2) then 
+      if (cord_y < 6) then -- here to prevent drawing on the other side of screen
+        screen((cord_y + 1)) <= ((("00000" & figure(2)) sll to_integer(cord_x)) srl 1);
+      end if;
     end if;
 
   end process; -- identifier
