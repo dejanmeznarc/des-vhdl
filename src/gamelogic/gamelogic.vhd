@@ -97,7 +97,8 @@ begin
       -- detect bottom
       bottom_detection: if (screenFig(6) > 0) then
         currentLine <= (others => '0');
-
+        figureId <= '0' & counter(1 downto 0);
+        
         saveFigToBarrier: for i in 1 to 6 loop
           screenBarrier(i) <= screenBarrier(i) or screenFig(i);
         end loop;
@@ -107,6 +108,7 @@ begin
       collision_detection: for i in 0 to 6 loop
         if (screenFig(i) and screenBarrier(i)) > 0 then
           currentLine <= (others => '0');
+          figureId <= '0' & counter(1 downto 0);
 
           saveFigToBarrier2: for i in 1 to 6 loop
             screenBarrier(i - 1) <= screenBarrier(i - 1) or screenFig(i);
