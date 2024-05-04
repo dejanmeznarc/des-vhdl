@@ -153,6 +153,13 @@ begin
         end if;
       end loop;
 
+      -- detect and remove bottom line
+      if ((screenBarrier(6) or screenFig(6)) = "11111") then
+        shiftdown: for i in 0 to 5 loop
+          screenBarrier(i+1) <= screenBarrier(i) or screenFig(i);
+        end loop;
+      end if;
+
       -- detect loose scenario
       looser_detection: if (screenFig(0) and screenBarrier(0)) > 0 then
         currentLine <= (others => '0');
