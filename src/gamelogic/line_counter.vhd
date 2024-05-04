@@ -9,7 +9,7 @@ library ieee;
 entity line_counter is
   generic (
     INTERVAL  : natural := 2 ** 26;
-    MAX_LINES : natural := 6
+    MAX_LINES : natural := 7 --there is one more line, so there is some recovery time.
   );
   port (
     clk  : in    std_logic;

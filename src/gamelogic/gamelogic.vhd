@@ -30,38 +30,6 @@ architecture rtl of gamelogic is
 
 begin
 
-  screenBarrier <= (
-    -- "10001",
-    -- "10001",
-    -- "10001",
-    -- "10001",
-    -- "10001",
-    -- "10001",
-    -- "10001"
-
-    "00001",
-    "00001",
-    "00001",
-    "00001",
-    "00001",
-    "00001",
-    "00001"
-
-    -- "00000",
-    -- "00000",
-    -- "00000",
-    -- "00000",
-    -- "00000",
-    -- "00000",
-    -- "00000"
-  );
-
-  -- line_counter_inst: entity work.line_counter
-  --   port map (
-  --     clk  => clk,
-  --     line => currentLine
-  --   );
-
   movement_control: process (clk)
     variable limitRight      : unsigned(2 downto 0);
     variable limitLeft       : unsigned(2 downto 0);
@@ -69,8 +37,7 @@ begin
 
   begin
     if rising_edge(clk) then
-
-      -- calculate left/right limits
+      -- default limits
       limitRight := "000";
       limitLeft := "100";
 
@@ -87,51 +54,42 @@ begin
         end if;
       end loop;
 
-      -- Types of limits:
-      ---  a) figure/edge limit (figures bigger than 1x1, so they dont go over screen edge) 
-      ---  b) collision limit (figures cant collide into exsisting barrier)
-      --- 01*00 -- lock_left=true, lock_right_false
-      --- 01000
-      --- 01000
-      --- 01**0 -- locl left=1
-      --- 010*0 -- lock left=0
-      --- 01000
-      --- 01000
       -- process user left/right interaction and constrain it.
       if (clicks(0) = '1') then
-        constrain_loc_left: if (virtualLocation < limitLeft) then
+        if (virtualLocation < limitLeft) then
           virtualLocation := virtualLocation + 1;
         end if;
       elsif (clicks(1) = '1') then
-        constrain_loc_right: if (virtualLocation > limitRight) then
+        if (virtualLocation > limitRight) then
           virtualLocation := virtualLocation - 1;
         end if;
       end if;
 
+      -- figure 
       if (clicks(3) = '1') then
         figureId <= figureId + 1;
       end if;
 
     end if;
-    pin_leds(2 downto 0) <= limitLeft;
     location <= virtualLocation;
   end process;
 
-  -- collsion_check: process (currentLine, location)
-  -- begin
-  --   screenFig <= (others => (others => '0'));
-  --   screenFig(to_integer(currentLine)) <= "00000" & '1' sll to_integer(location);
-  --   -- screen(3) <= "00000" & '1' sll to_integer(location);
-  -- end process;
-  gpu_firuge_drawer_inst: entity work.gpu_firuge_drawer
+  line_counter_inst: entity work.line_counter
+    port map (
+      clk  => clk,
+      line => currentLine
+    );
+
+  draw_figure_screen: entity work.gpu_firuge_drawer
     port map (
       figureID => figureId,
       cord_x   => location,
-      cord_y   => 3,
+      cord_y   => to_integer(currentLine) - 1, -- shift one line up to achive falling effect (so it doesnt just appear on the screen)
       screen   => screenFig
     );
 
-  jj: for i in 0 to 6 generate
+  combine_screens: for i in 0 to 6 generate
     screen(i) <= screenFig(i) or screenBarrier(i);
   end generate;
+
 end architecture;
