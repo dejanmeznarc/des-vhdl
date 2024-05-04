@@ -52,6 +52,15 @@ begin
 
   line <= line when looseFlag = '1' else count(27 downto 25);
 
+  locationLimiter: entity work.location_limiter
+    port map (
+      locLimitR      => locLimitR,
+      locLimitL      => locLimitL,
+      location       => location,
+      screen_barrier => screen_barrier,
+      screen_fig     => screen_fig
+    );
+
   figLimitFinder_inst: entity work.figLimitFinder
     port map (
       figureID   => curFigure,
@@ -61,6 +70,20 @@ begin
 
   identifier: process (clk)
   begin
+
+
+    -- here we sould check for location changes
+    -- in one clycle we check for next line
+    -- in other for limits left right
+    -- user input is also validated here. if there is side collision, ignore that user input.
+
+
+    ---- or
+    -- we update line inside risingedge(clk). (i mean we do that now)
+    -- in the same cycle, we set left/right limits, since line isnt updated
+    -- absolute limits can stay outside cycle.
+
+
     if rising_edge(clk) then
 
       count <= count + 1;
@@ -72,6 +95,7 @@ begin
           screen_barrier(i) <= screen_barrier(i) or screen_fig(i);
         end loop;
       end if;
+
       --detect collisions
       detectCollsion: for i in 0 to 6 loop
         if (screen_fig(i) and screen_barrier(i)) > 0 then
@@ -127,8 +151,6 @@ begin
 
   reset <= btns(2) and btns(3);
 
-  locLimitL <= limitAbsLeft;
-  locLimitR <= limitAbsRight;
   pin_leds(7 downto 5) <= limitAbsLeft;
   pin_leds(2 downto 0) <= limitAbsRight;
 end architecture;
