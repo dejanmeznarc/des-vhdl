@@ -5,7 +5,7 @@ library IEEE;
   use work.figure_type.all;
   use work.figures.all;
 
-entity gpu_firuge_drawer is
+entity figure_drawer is
   port (
     figureID : in  unsigned(2 downto 0);                    -- wha fig to display
 
@@ -15,7 +15,7 @@ entity gpu_firuge_drawer is
   );
 end entity;
 
-architecture rtl of gpu_firuge_drawer is
+architecture rtl of figure_drawer is
   signal figure : figure_t;
 begin
 

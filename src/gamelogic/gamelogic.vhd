@@ -140,7 +140,7 @@ begin
     location <= virtualLocation;
   end process;
 
-  draw_figure_screen: entity work.gpu_firuge_drawer
+  draw_figure_screen: entity work.figure_drawer
     port map (
       figureID => figureId,
       cord_x   => location,
