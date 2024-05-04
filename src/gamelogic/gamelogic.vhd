@@ -30,7 +30,14 @@ architecture rtl of gamelogic is
   signal looser : std_logic := '0';
 
   signal counter : unsigned(27 downto 0);
+  signal random  : unsigned(7 downto 0);
 begin
+
+  random_inst: entity work.random
+    port map (
+      clk    => clk,
+      number => random
+    );
 
   movement_control: process (clk)
     variable limitRight      : unsigned(2 downto 0);
@@ -85,7 +92,7 @@ begin
       -- detect bottom
       bottom_detection: if (screenFig(6) > 0) then
         currentLine <= (others => '0');
-        figureId <= '0' & counter(1 downto 0);
+        figureId <= random(3 downto 1);
 
         saveFigToBarrier: for i in 1 to 6 loop
           screenBarrier(i) <= screenBarrier(i) or screenFig(i);
@@ -96,7 +103,7 @@ begin
       collision_detection: for i in 0 to 6 loop
         if (screenFig(i) and screenBarrier(i)) > 0 then
           currentLine <= (others => '0');
-          figureId <= '0' & counter(1 downto 0);
+          figureId <= random(3 downto 1);
 
           saveFigToBarrier2: for i in 1 to 6 loop
             screenBarrier(i - 1) <= screenBarrier(i - 1) or screenFig(i);
@@ -115,6 +122,7 @@ begin
       reset_detection: if (btns(3) and btns(2)) = '1' then
         screenBarrier <= (others => (others => '0'));
         currentLine <= (others => '0');
+        figureId <= random(3 downto 1);
         pin_leds <= (others => '0');
         looser <= '0';
       end if;
