@@ -18,10 +18,19 @@ entity gamelogic is
 end entity;
 
 architecture rtl of gamelogic is
-  signal currentLine : unsigned(2 downto 0) := "011";
+  signal screenBarrier  : screen_t := (others => (others => '0'));
+  signal screenFig      : screen_t := (others => (others => '0'));
+  signal screenGameOver : screen_t := (
+    "00000",
+    "01000",
+    "01000",
+    "01000",
+    "01000",
+    "01110",
+    "00000"
+  );
 
-  signal screenBarrier : screen_t := (others => (others => '0'));
-  signal screenFig     : screen_t := (others => (others => '0'));
+  signal currentLine : unsigned(2 downto 0) := "000";
 
   signal location : unsigned(2 downto 0);
 
@@ -140,7 +149,7 @@ begin
     );
 
   combine_screens: for i in 0 to 6 generate
-    screen(i) <= screenFig(i) or screenBarrier(i);
+    screen(i) <= (screenFig(i) or screenBarrier(i)) when looser = '0' else screenGameOver(i);
   end generate;
 
 end architecture;
