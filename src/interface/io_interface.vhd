@@ -8,6 +8,7 @@ entity io_interface is
     clk        : in    std_logic; -- WARN: needs 4 cycles to sync all data
     buttons    : out   unsigned(3 downto 0);
     matrixData : in    unsigned(7 downto 0);
+    audio      : in    std_logic := '0';
 
     pin_addr   : out   std_logic_vector(1 downto 0);
     pin_data   : inout std_logic_vector(7 downto 0);
@@ -41,6 +42,7 @@ begin
   pin_addr <= std_logic_vector(address);
   pin_data <= (others => 'Z')                 when address = "01" else -- read mode
                (std_logic_vector(matrixData)) when address = "10" else -- write matrix
+               ("ZZ" & audio & "ZZZZZ")       when address = "11" else -- write  audio pwm
                (others => 'Z'); -- others (not yet defined)
 
   -- TODO: find better way of storing button state. (without creating another signal)
