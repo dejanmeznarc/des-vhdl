@@ -8,11 +8,13 @@ library IEEE;
 entity gamelogic is
 
   port (
-    clk      : in  std_logic;
-    screen   : out screen_t;
-    pin_leds : out unsigned(7 downto 0);
-    btns     : in  unsigned(3 downto 0);
-    clicks   : in  unsigned(3 downto 0)
+    clk          : in  std_logic;
+
+    playBtnPress : out std_logic;
+    screen       : out screen_t;
+    pin_leds     : out unsigned(7 downto 0);
+    btns         : in  unsigned(3 downto 0);
+    clicks       : in  unsigned(3 downto 0)
 
   );
 end entity;
@@ -88,13 +90,17 @@ begin
       -- process user left/right interaction and constrain it.
       if (looser = '0') then
         if (clicks(0) = '1') then
+          playBtnPress <= '1';
           if (virtualLocation < limitLeft) then
             virtualLocation := virtualLocation + 1;
           end if;
         elsif (clicks(1) = '1') then
+          playBtnPress <= '1';
           if (virtualLocation > limitRight) then
             virtualLocation := virtualLocation - 1;
           end if;
+        else
+          playBtnPress <= '0';
         end if;
       end if;
 

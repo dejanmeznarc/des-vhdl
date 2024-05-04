@@ -8,6 +8,8 @@ entity interface is
     clk      : in    std_logic;
     buttons  : out   unsigned(3 downto 0);
     screen   : in    screen_t;
+    tone   : in    unsigned(2 downto 0) := (others => '0');
+
 
     pin_addr : out   std_logic_vector(1 downto 0);
     pin_data : inout std_logic_vector(7 downto 0);
@@ -64,7 +66,7 @@ begin
     port map (
       clk    => clk,
       pwmClk => pwmClk,
-      tone   => "000",
+      tone   => tone,
       output => audio
     );
 

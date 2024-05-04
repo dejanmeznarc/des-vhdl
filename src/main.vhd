@@ -28,6 +28,12 @@ architecture RTL of main is
 
   signal clicks : unsigned(3 downto 0);
 
+  signal tone : unsigned(2 downto 0);
+
+
+  signal playBtnPress : std_logic;
+
+
 begin
   interface_inst: entity work.interface
     port map (
@@ -36,7 +42,8 @@ begin
       screen   => screen,
       pin_addr => pin_io_addr,
       pin_data => pin_io_data,
-      pin_clk  => pin_io_clkout
+      pin_clk  => pin_io_clkout,
+      tone     => tone
     );
 
   control_inst: entity work.control
@@ -52,7 +59,16 @@ begin
       btns     => buttonData,
       pin_leds => pin_led,
       clicks   => clicks,
-      screen   => screen
+      screen   => screen,
+      playBtnPress => playBtnPress
+    );
+
+
+    audio_composer: entity work.composer
+    port map (
+      clk  => clk,
+      tone => tone,
+      playBtnPress => playBtnPress
     );
 
 end architecture;
