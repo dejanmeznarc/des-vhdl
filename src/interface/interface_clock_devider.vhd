@@ -12,7 +12,7 @@ entity interface_clock_divider is
 end entity;
 
 architecture rtl of interface_clock_divider is
-  signal count : unsigned(31 downto 0) := (others => '0');
+  signal count : unsigned(5 downto 0) := (others => '0');
 
 begin
 
