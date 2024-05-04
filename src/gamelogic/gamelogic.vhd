@@ -27,6 +27,9 @@ architecture rtl of gamelogic is
 
   signal figureId : unsigned(2 downto 0) := "010";
 
+  signal looser : std_logic := '0';
+
+  signal counter : unsigned(27 downto 0);
 begin
 
   movement_control: process (clk)
@@ -36,6 +39,19 @@ begin
 
   begin
     if rising_edge(clk) then
+
+      -- clock
+      if (counter > 2 ** 26) then
+        counter <= (others => '0');
+
+        if (currentLine >= 7) then
+          currentLine <= (others => '0');
+        else
+          currentLine <= currentLine + 1;
+        end if;
+      else
+      counter <= counter + 1;
+      end if;
 
       -- default limits
       limitRight := "000";
@@ -55,30 +71,29 @@ begin
       end loop;
 
       -- process user left/right interaction and constrain it.
-      if (clicks(0) = '1') then
-        if (virtualLocation < limitLeft) then
-          virtualLocation := virtualLocation + 1;
-        end if;
-      elsif (clicks(1) = '1') then
-        if (virtualLocation > limitRight) then
-          virtualLocation := virtualLocation - 1;
+      if (looser = '0') then
+        if (clicks(0) = '1') then
+          if (virtualLocation < limitLeft) then
+            virtualLocation := virtualLocation + 1;
+          end if;
+        elsif (clicks(1) = '1') then
+          if (virtualLocation > limitRight) then
+            virtualLocation := virtualLocation - 1;
+          end if;
         end if;
       end if;
 
       -- figure 
-      if (clicks(3) = '1') then
-        figureId <= figureId + 1;
-      end if;
-
-      if (clicks(2) = '1') then
-        if currentLine > 7 then
-          currentLine <= (others => '0');
-        else
-          currentLine <= currentLine + 1;
-        end if;
-      end if;
-
-      ---- DEJANNN
+      -- if (clicks(3) = '1') then
+      --   figureId <= figureId + 1;
+      -- end if;
+      -- if (clicks(2) = '1') then
+      --   if currentLine > 7 then
+      --     currentLine <= (others => '0');
+      --   else
+      --     currentLine <= currentLine + 1;
+      --   end if;
+      -- end if;
       -- detect bottom
       bottom_detection: if (screenFig(6) > 0) then
         currentLine <= (others => '0');
@@ -100,26 +115,24 @@ begin
         end if;
       end loop;
 
+      -- detect loose scenario
       looser_detection: if (screenFig(0) and screenBarrier(0)) > 0 then
         currentLine <= (others => '0');
         pin_leds <= (others => '1');
+        looser <= '1';
       end if;
 
       reset_detection: if (btns(3) and btns(2)) = '1' then
         screenBarrier <= (others => (others => '0'));
         currentLine <= (others => '0');
         pin_leds <= (others => '0');
+        looser <= '0';
       end if;
 
     end if;
     location <= virtualLocation;
   end process;
 
-  -- line_counter_inst: entity work.line_counter
-  --   port map (
-  --     clk  => clk,
-  --     line => currentLine
-  --   );
   draw_figure_screen: entity work.gpu_firuge_drawer
     port map (
       figureID => figureId,
