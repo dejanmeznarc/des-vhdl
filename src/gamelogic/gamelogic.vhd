@@ -37,6 +37,7 @@ architecture rtl of gamelogic is
   signal currentLine : unsigned(2 downto 0) := "000";
 
   signal location : unsigned(2 downto 0);
+  signal rotation : unsigned(1 downto 0) := "00";
 
   signal figureId : unsigned(2 downto 0) := "010";
 
@@ -66,7 +67,8 @@ begin
         if (currentLine >= 7) then
           currentLine <= (others => '0');
         else
-          currentLine <= currentLine + 1;
+          --currentLine <= currentLine + 1;
+          currentLine <= "011";
         end if;
       else
         counter <= counter + 1;
@@ -91,22 +93,32 @@ begin
 
       -- process user left/right interaction and constrain it.
       if (looser = '0') then
-        if (clicks(0) = '1') then
+        if (clicks(0) = '1') then --move left
           song <= s_move;
           songPlay <= '1';
 
           if (virtualLocation < limitLeft) then
             virtualLocation := virtualLocation + 1;
           end if;
-        elsif (clicks(1) = '1') then
+        elsif (clicks(1) = '1') then -- move right
           song <= s_move;
           songPlay <= '1';
           if (virtualLocation > limitRight) then
             virtualLocation := virtualLocation - 1;
           end if;
+
+        elsif (clicks(2) = '1') then --rotate CCW
+          song <= s_move;
+          songPlay <= '1';
+          rotation <= rotation - 1;
+        elsif (clicks(3) = '1') then -- rotate CW
+          song <= s_move;
+          songPlay <= '1';
+          rotation <= rotation + 1;
         else
           songPlay <= '0';
         end if;
+        pin_leds(1 downto 0) <= rotation;
       end if;
 
       -- detect bottom
@@ -137,7 +149,7 @@ begin
         currentLine <= (others => '0');
         pin_leds <= (others => '1');
         looser <= '1';
-      
+
         song <= s_looser;
         -- play song only once
         if (looser = '0') then
@@ -164,7 +176,8 @@ begin
       figureID => figureId,
       cord_x   => location,
       cord_y   => to_integer(currentLine) - 1, -- shift one line up to achive falling effect (so it doesnt just appear on the screen)
-      screen   => screenFig
+      screen   => screenFig,
+      rotation => rotation
     );
 
   combine_screens: for i in 0 to 6 generate

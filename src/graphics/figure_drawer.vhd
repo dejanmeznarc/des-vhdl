@@ -11,15 +11,59 @@ entity figure_drawer is
 
     cord_x   : in  unsigned(2 downto 0) := (others => '0'); -- col
     cord_y   : in  integer range - 1 to 6;
+    rotation : in  unsigned(1 downto 0) := (others => '0');
     screen   : out screen_t
   );
 end entity;
 
 architecture rtl of figure_drawer is
+
   signal figure : figure_t;
+
 begin
 
-  figure <= figuresRom(to_integer(figureID));
+  rotate: process (rotation, figureID)
+
+    variable fig        : figure_t;
+    variable rotatedFig : figure_t;
+
+    --type fig2_t is array (natural range <>) of unsigned(0 to 2);
+    -- alias inverted : bigfig_t(0 to 2) is fig; 
+
+  begin
+    fig := figuresRom(to_integer(figureID));
+
+    if (rotation = 0) then
+      rotatedFig := fig;
+
+    elsif (rotation = 1) then
+      -- zasuk za 90 deg
+      for j in 0 to 2 loop
+        for i in 0 to 2 loop
+          rotatedFig(j)(i) := fig(2 - i)(j);
+        end loop;
+      end loop;
+
+    elsif (rotation = 2) then
+      -- zasuk 2 (za 180deg)
+      for j in 0 to 2 loop
+        for i in 0 to 2 loop
+          rotatedFig(i)(2-j) := fig(2-i)(j);
+        end loop;
+      end loop;
+
+    elsif (rotation = 3) then
+      -- zasuk za 270 deg
+      for j in 0 to 2 loop
+        for i in 0 to 2 loop
+          rotatedFig(2 - j)(i) := fig(i)(j);
+        end loop;
+      end loop;
+    end if;
+
+    figure <= rotatedFig;
+
+  end process; -- rotate
 
   draw: process (figure, cord_x, cord_y)
   begin

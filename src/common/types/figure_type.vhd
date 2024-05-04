@@ -3,9 +3,13 @@ library IEEE;
   use IEEE.numeric_std.all;
 
 package figure_type is
-  type figure_t is array (0 to 2) of unsigned(0 to 2);
+
+  subtype fig_line_t is unsigned(0 to 2);
+
+  type bigfig_t is array (natural range <>) of fig_line_t;
+
+  subtype figure_t is bigfig_t(0 to 2);
 
   type figures_t is array (0 to 7) of figure_t;
-
 
 end package;
