@@ -18,7 +18,6 @@ entity gamelogic is
 end entity;
 
 architecture rtl of gamelogic is
-  signal counter     : unsigned(27 downto 0);
   signal currentLine : unsigned(2 downto 0) := "011";
 
   signal screenBarrier : screen_t := (others => (others => '0'));
@@ -37,6 +36,7 @@ begin
 
   begin
     if rising_edge(clk) then
+
       -- default limits
       limitRight := "000";
       limitLeft := "100";
@@ -70,16 +70,56 @@ begin
         figureId <= figureId + 1;
       end if;
 
+      if (clicks(2) = '1') then
+        if currentLine > 7 then
+          currentLine <= (others => '0');
+        else
+          currentLine <= currentLine + 1;
+        end if;
+      end if;
+
+      ---- DEJANNN
+      -- detect bottom
+      bottom_detection: if (screenFig(6) > 0) then
+        currentLine <= (others => '0');
+
+        saveFigToBarrier: for i in 1 to 6 loop
+          screenBarrier(i) <= screenBarrier(i) or screenFig(i);
+        end loop;
+      end if;
+
+      -- detect collision
+      collision_detection: for i in 0 to 6 loop
+        if (screenFig(i) and screenBarrier(i)) > 0 then
+          currentLine <= (others => '0');
+
+          saveFigToBarrier2: for i in 1 to 6 loop
+            screenBarrier(i - 1) <= screenBarrier(i - 1) or screenFig(i);
+          end loop;
+
+        end if;
+      end loop;
+
+      looser_detection: if (screenFig(0) and screenBarrier(0)) > 0 then
+        currentLine <= (others => '0');
+        pin_leds <= (others => '1');
+      end if;
+
+      reset_detection: if (btns(3) and btns(2)) = '1' then
+        screenBarrier <= (others => (others => '0'));
+        currentLine <= (others => '0');
+        pin_leds <= (others => '0');
+      end if;
+
     end if;
     location <= virtualLocation;
   end process;
 
-  line_counter_inst: entity work.line_counter
-    port map (
-      clk  => clk,
-      line => currentLine
-    );
-
+  -- line_counter_inst: entity work.line_counter
+  --   port map (
+  --     clk  => clk,
+  --     line => currentLine
+  --   );
   draw_figure_screen: entity work.gpu_firuge_drawer
     port map (
       figureID => figureId,
