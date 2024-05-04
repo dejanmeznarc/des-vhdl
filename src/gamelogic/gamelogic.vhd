@@ -67,8 +67,8 @@ begin
         if (currentLine >= 7) then
           currentLine <= (others => '0');
         else
-          --currentLine <= currentLine + 1;
-          currentLine <= "011";
+          currentLine <= currentLine + 1;
+          --currentLine <= "011";--block line
         end if;
       else
         counter <= counter + 1;
