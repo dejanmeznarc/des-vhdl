@@ -2,6 +2,7 @@ library IEEE;
   use IEEE.std_logic_1164.all;
   use IEEE.numeric_std.all;
   use work.screen_pkg.all;
+  use work.song_pkg.all;
 
 entity main is
   port (
@@ -30,9 +31,8 @@ architecture RTL of main is
 
   signal tone : unsigned(2 downto 0);
 
-
-  signal playBtnPress : std_logic;
-
+  signal song     : composer_song_t;
+  signal songPlay : std_logic;
 
 begin
   interface_inst: entity work.interface
@@ -60,15 +60,30 @@ begin
       pin_leds => pin_led,
       clicks   => clicks,
       screen   => screen,
-      playBtnPress => playBtnPress
+      song     => song,
+      songPlay     => songPlay
     );
 
-
-    audio_composer: entity work.composer
+  audio_composer: entity work.composer
     port map (
       clk  => clk,
       tone => tone,
-      playBtnPress => clicks(2)
+      song => song,
+      play => songPlay
     );
 
+  -- identifier: process (clk)
+  -- begin
+  --   if (rising_edge(clk)) then
+  --     if (clicks(2) = '1') then
+  --       song <= looser;
+  --     end if;
+  --     if (clicks(3) = '1') then
+  --       song <= move;
+  --     end if;
+  --     if (clicks(0) = '1') then
+  --       song <= quiet;
+  --     end if;
+  --   end if;
+  -- end process; -- identifier
 end architecture;

@@ -2,19 +2,21 @@ library IEEE;
   use IEEE.std_logic_1164.all;
   use IEEE.numeric_std.all;
   use work.screen_pkg.all;
+  use work.song_pkg.all;
   use work.figure_type.all;
   use work.figures.all;
 
 entity gamelogic is
 
   port (
-    clk          : in  std_logic;
+    clk      : in  std_logic;
+    screen   : out screen_t;
+    pin_leds : out unsigned(7 downto 0);
+    btns     : in  unsigned(3 downto 0);
+    clicks   : in  unsigned(3 downto 0);
 
-    playBtnPress : out std_logic;
-    screen       : out screen_t;
-    pin_leds     : out unsigned(7 downto 0);
-    btns         : in  unsigned(3 downto 0);
-    clicks       : in  unsigned(3 downto 0)
+    songPlay : out std_logic;
+    song     : out composer_song_t := s_quiet
 
   );
 end entity;
@@ -90,17 +92,20 @@ begin
       -- process user left/right interaction and constrain it.
       if (looser = '0') then
         if (clicks(0) = '1') then
-          playBtnPress <= '1';
+          song <= s_move;
+          songPlay <= '1';
+
           if (virtualLocation < limitLeft) then
             virtualLocation := virtualLocation + 1;
           end if;
         elsif (clicks(1) = '1') then
-          playBtnPress <= '1';
+          song <= s_move;
+          songPlay <= '1';
           if (virtualLocation > limitRight) then
             virtualLocation := virtualLocation - 1;
           end if;
         else
-          playBtnPress <= '0';
+          songPlay <= '0';
         end if;
       end if;
 
@@ -132,6 +137,14 @@ begin
         currentLine <= (others => '0');
         pin_leds <= (others => '1');
         looser <= '1';
+      
+        song <= s_looser;
+        -- play song only once
+        if (looser = '0') then
+          songPlay <= '1';
+        else
+          songPlay <= '0';
+        end if;
       end if;
 
       reset_detection: if (btns(3) and btns(2)) = '1' then

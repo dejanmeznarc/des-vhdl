@@ -117,6 +117,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to pwm1
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[0]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rot[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to rotb
+set_global_assignment -name VHDL_FILE src/common/types/song_pkg.vhd
+set_global_assignment -name VHDL_FILE src/audio/songs/move_song.vhd
+set_global_assignment -name VHDL_FILE src/audio/songs/looser_song.vhd
 set_global_assignment -name VHDL_FILE src/audio/composer.vhd
 set_global_assignment -name VHDL_FILE src/interface/audio/sin_gen.vhd
 set_global_assignment -name VHDL_FILE src/interface/audio/pwm.vhd
