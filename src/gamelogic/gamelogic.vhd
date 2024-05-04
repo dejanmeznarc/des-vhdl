@@ -22,7 +22,17 @@ entity gamelogic is
 end entity;
 
 architecture rtl of gamelogic is
-  signal screenBarrier  : screen_t := (others => (others => '0'));
+  --signal screenBarrier  : screen_t := (others => (others => '0'));
+  signal screenBarrier : screen_t := (
+    "00000",
+    "00000",
+    "00000",
+    "00000",
+    "00000",
+    "00000",
+    "11011"
+  );
+
   signal screenFig      : screen_t := (others => (others => '0'));
   signal screenGameOver : screen_t := (
     "00000",
@@ -64,7 +74,7 @@ begin
 
   begin
     if rising_edge(clk) then
-
+      songPlay <= '0';
       -- clock
       if (counter > 2 ** 26) then
         counter <= (others => '0');
@@ -156,8 +166,11 @@ begin
       -- detect and remove bottom line
       if ((screenBarrier(6) or screenFig(6)) = "11111") then
         shiftdown: for i in 0 to 5 loop
-          screenBarrier(i+1) <= screenBarrier(i) or screenFig(i);
+          screenBarrier(i + 1) <= screenBarrier(i) or screenFig(i);
         end loop;
+
+        song <= s_woosh;
+        songPlay <= '1';
       end if;
 
       -- detect loose scenario
@@ -176,7 +189,17 @@ begin
       end if;
 
       reset_detection: if (btns(3) and btns(2)) = '1' then
-        screenBarrier <= (others => (others => '0'));
+        --screenBarrier <= (others => (others => '0'));
+        screenBarrier <= (
+          "00000",
+          "00000",
+          "00000",
+          "00000",
+          "00000",
+          "00000",
+          "11011"
+        );
+
         currentLine <= (others => '0');
         figureId <= random(3 downto 1);
         pin_leds <= (others => '0');

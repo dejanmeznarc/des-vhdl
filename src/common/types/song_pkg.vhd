@@ -3,6 +3,6 @@ library IEEE;
   use IEEE.numeric_std.all;
 
 package song_pkg is
-    type composer_song_t is (s_quiet, s_looser, s_move);
+    type composer_song_t is (s_quiet, s_looser, s_move, s_woosh);
 
 end package;

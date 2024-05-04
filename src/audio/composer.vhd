@@ -18,6 +18,7 @@ end entity;
 architecture rtl of composer is
   signal toneLooser : unsigned(2 downto 0);
   signal toneMover  : unsigned(2 downto 0);
+  signal toneWoosh  : unsigned(2 downto 0);
 
 begin
 
@@ -35,7 +36,15 @@ begin
       tone => toneMover
     );
 
+  woosh_song_inst: entity work.woosh_song
+    port map (
+      clk  => clk,
+      play => play,
+      tone => toneWoosh
+    );
+
   tone <= toneLooser when (song = s_looser) else
           toneMover  when (song = s_move) else
+          toneWoosh  when (song = s_woosh) else
           "000"; -- 000 -> be quiet
 end architecture;
