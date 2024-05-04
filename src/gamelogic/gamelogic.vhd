@@ -43,14 +43,13 @@ begin
       -- clock
       if (counter > 2 ** 26) then
         counter <= (others => '0');
-
         if (currentLine >= 7) then
           currentLine <= (others => '0');
         else
           currentLine <= currentLine + 1;
         end if;
       else
-      counter <= counter + 1;
+        counter <= counter + 1;
       end if;
 
       -- default limits
@@ -83,22 +82,11 @@ begin
         end if;
       end if;
 
-      -- figure 
-      -- if (clicks(3) = '1') then
-      --   figureId <= figureId + 1;
-      -- end if;
-      -- if (clicks(2) = '1') then
-      --   if currentLine > 7 then
-      --     currentLine <= (others => '0');
-      --   else
-      --     currentLine <= currentLine + 1;
-      --   end if;
-      -- end if;
       -- detect bottom
       bottom_detection: if (screenFig(6) > 0) then
         currentLine <= (others => '0');
         figureId <= '0' & counter(1 downto 0);
-        
+
         saveFigToBarrier: for i in 1 to 6 loop
           screenBarrier(i) <= screenBarrier(i) or screenFig(i);
         end loop;
