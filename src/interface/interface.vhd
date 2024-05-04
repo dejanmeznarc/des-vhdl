@@ -21,13 +21,17 @@ architecture rtl of interface is
   signal buttonData : unsigned(3 downto 0);
 
   signal slowClk : std_logic := '0';
+  signal pwmClk  : std_logic := '0';
+
+  signal audio : std_logic := '0';
 
 begin
 
   interface_clock_divider_inst: entity work.interface_clock_divider
     port map (
-      clk  => clk,
-      clk2 => slowClk
+      clk   => clk,
+      clk2  => slowClk,
+      pwmEN => pwmClk
     );
 
   -- IO interface manages mux at the daughterboard
@@ -38,7 +42,8 @@ begin
       matrixData => matrixData,
       pin_addr   => pin_addr,
       pin_data   => pin_data,
-      pin_clk    => pin_clk
+      pin_clk    => pin_clk,
+      audio      => audio
     );
 
   matrix_inst: entity work.matrix
@@ -53,6 +58,14 @@ begin
       clk     => slowClk,
       btn_in  => buttonData,
       buttons => buttons
+    );
+
+  audio_inst: entity work.audio
+    port map (
+      clk    => clk,
+      pwmClk => pwmClk,
+      tone   => "001",
+      output => audio
     );
 
 end architecture;
