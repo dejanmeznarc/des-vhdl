@@ -20,11 +20,13 @@ architecture rtl of audio is
   type tonemap_t is array (0 to 4) of unsigned(7 downto 0);
   signal tonemap : tonemap_t := (-- TODO: use actual tones
     x"00",
-    x"A0",
+    x"90",
     x"B9",
     x"D3",
     x"F7"
   );
+
+  signal tempOut : std_logic;
 
 begin
 
@@ -41,7 +43,8 @@ begin
     port map (
       clk    => clk,
       duty   => audioAnalog,
-      output => output
+      output => tempOut
     );
 
+  output <= tempOut when tone > 0 else '0'; --prevent high pich noise
 end architecture;

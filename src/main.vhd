@@ -68,7 +68,7 @@ begin
     port map (
       clk  => clk,
       tone => tone,
-      playBtnPress => playBtnPress
+      playBtnPress => clicks(2)
     );
 
 end architecture;
