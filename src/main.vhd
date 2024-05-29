@@ -35,6 +35,8 @@ architecture RTL of main is
   signal songPlay : std_logic;
 
 begin
+
+  -- Interface handles communication to external board 
   interface_inst: entity work.interface
     port map (
       clk      => clk,
@@ -46,6 +48,7 @@ begin
       tone     => tone
     );
 
+  -- Control detects button click, hold and push
   control_inst: entity work.control
     port map (
       clk     => clk,
@@ -53,6 +56,8 @@ begin
       clicks  => clicks
     );
 
+
+  -- Main game engine
   gamelogic_inst: entity work.gamelogic
     port map (
       clk      => clk,
@@ -64,6 +69,8 @@ begin
       songPlay     => songPlay
     );
 
+
+  -- Plays melodies and controls sound effects
   audio_composer: entity work.composer
     port map (
       clk  => clk,
@@ -71,6 +78,7 @@ begin
       song => song,
       play => songPlay
     );
+
 
   -- identifier: process (clk)
   -- begin

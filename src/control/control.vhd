@@ -15,6 +15,7 @@ architecture rtl of control is
   signal clicks_tmp : std_logic_vector(3 downto 0);
 
 begin
+  -- detect click on all buttons
   clickDetector: for i in 0 to 3 generate
     u4: entity work.btn_click_detector
       port map (

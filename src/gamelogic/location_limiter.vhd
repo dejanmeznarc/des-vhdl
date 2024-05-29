@@ -6,7 +6,7 @@ library IEEE;
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
-
+--deprecated
 entity location_limiter is
   port (
     locLimitR      : out unsigned(2 downto 0) := "010";

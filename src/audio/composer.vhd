@@ -21,6 +21,7 @@ architecture rtl of composer is
 
 begin
 
+  -- one melody
   looser_song_inst: entity work.looser_song
     port map (
       clk  => clk,
@@ -28,6 +29,7 @@ begin
       tone => toneLooser
     );
 
+  -- second melody
   move_song_inst: entity work.move_song
     port map (
       clk  => clk,
@@ -35,6 +37,8 @@ begin
       tone => toneMover
     );
 
+
+  -- control which melody to play
   tone <= toneLooser when (song = s_looser) else
           toneMover  when (song = s_move) else
           "000"; -- 000 -> be quiet

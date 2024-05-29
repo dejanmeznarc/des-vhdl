@@ -30,7 +30,7 @@ architecture rtl of audio is
 
 begin
 
-  --- audio
+  --- audio sinus generator
   sin_gen_inst: entity work.sin_gen
     port map (
       clk          => clk,
@@ -39,6 +39,7 @@ begin
       analogOutput => audioAnalog
     );
 
+    -- pwm generator
   pwm_inst: entity work.pwm
     port map (
       clk    => clk,

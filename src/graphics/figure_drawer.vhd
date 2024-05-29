@@ -15,6 +15,7 @@ entity figure_drawer is
   );
 end entity;
 
+-- draws figures (falling things) on screen
 architecture rtl of figure_drawer is
   signal figure : figure_t;
 begin

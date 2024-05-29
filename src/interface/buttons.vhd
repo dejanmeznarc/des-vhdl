@@ -14,6 +14,7 @@ end entity;
 architecture rtl of buttons is
 begin
 
+  -- use debouncer for all buttons
   allBtns: for i in 0 to 3 generate
     name: entity work.button_debouncer
       port map (

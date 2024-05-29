@@ -1,4 +1,4 @@
---- https://www.engineersgarage.com/feed-back-register-in-vhdl/
+---src: https://www.engineersgarage.com/feed-back-register-in-vhdl/
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;

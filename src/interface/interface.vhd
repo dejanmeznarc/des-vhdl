@@ -48,6 +48,7 @@ begin
       audio      => audio
     );
 
+    -- controls drawing on matrix
   matrix_inst: entity work.matrix
     port map (
       clk         => slowClk, -- use slower clock, so itnerface can update all values
@@ -55,6 +56,7 @@ begin
       screen      => screen
     );
 
+    -- translated button data
   buttons_inst: entity work.buttons
     port map (
       clk     => slowClk,
@@ -62,6 +64,7 @@ begin
       buttons => buttons
     );
 
+    -- generates sine waveform with pwm
   audio_inst: entity work.audio
     port map (
       clk    => clk,

@@ -147,6 +147,7 @@ begin
         end if;
       end if;
 
+      -- restart game
       reset_detection: if (btns(3) and btns(2)) = '1' then
         screenBarrier <= (others => (others => '0'));
         currentLine <= (others => '0');
@@ -163,7 +164,7 @@ begin
     port map (
       figureID => figureId,
       cord_x   => location,
-      cord_y   => to_integer(currentLine) - 1, -- shift one line up to achive falling effect (so it doesnt just appear on the screen)
+      cord_y   => to_integer(currentLine) - 1, -- shift one line up to simulate falling effect (before it appears on the screen)
       screen   => screenFig
     );
 
